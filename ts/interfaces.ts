@@ -15,11 +15,13 @@ export interface ColumnProps {
   tasks: Task[]
   index: number
   column: Column
+  
 }
 
 export interface TaskProps {
   task: Task
   index: number
+  //provider?: React.ReactElement<HTMLElement, string | React.JSXElementConstructor<any>> | null | undefined
 }
 
 export interface Data {

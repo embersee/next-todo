@@ -3,28 +3,32 @@ import Tasks from './Tasks'
 import { ColumnProps } from '../ts/interfaces'
 
 const Column = ({ column, tasks, index }: ColumnProps) => (
-  <div className='flex-row mx-8 w-1/3'>
+  <div className=''>
     <Draggable draggableId={column.id} index={index}>
-      {(provided, snapshot) => (
+      {(draggableProvided, snapshot) => (
         <div
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
+          {...draggableProvided.draggableProps}
+          // {...draggableProvided.dragHandleProps}
+          ref={draggableProvided.innerRef}
         >
-          <h1 {...provided.dragHandleProps} className='text-2xl border'>
+          <h1
+            {...draggableProvided.dragHandleProps}
+            className='text-2xl border flex justify-center min-w-[250px]'
+          >
             {column.title}
           </h1>
           <Droppable droppableId={column.id} type='task'>
-            {(provided, snapshot) => (
+            {(droppableProvided, snapshot) => (
               <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className='border'
+                ref={droppableProvided.innerRef}
+                {...droppableProvided.droppableProps}
+                className='border min-h-[40px]'
               >
                 {tasks.map((t, i) => (
                   <Tasks key={t.id} task={t} index={i} />
                 ))}
-                {provided.placeholder}
+
+                {droppableProvided.placeholder}
               </div>
             )}
           </Droppable>

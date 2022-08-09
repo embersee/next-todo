@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react"
 
 export interface Task {
   map?: any
@@ -28,4 +29,11 @@ export interface Data {
   tasks: {[key: string]: Task}
   columns: {[key: string]: Column}
   columnOrder: Array<string>
+}
+
+export interface Search {
+  text: string
+  setText: Dispatch<SetStateAction<string>>
+  state: Data | null
+  setState: Dispatch<SetStateAction<Data | null>>  
 }

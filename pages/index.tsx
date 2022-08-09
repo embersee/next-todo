@@ -19,7 +19,7 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main className=''>{isBrowser ? <App /> : null}</main>
+      <main className='h-screen w-screen'>{isBrowser ? <App /> : null}</main>
 
       <footer className=''></footer>
     </div>

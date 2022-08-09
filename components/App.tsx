@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import Column from './Column'
 import { data } from './Data'
+import Search from './Search'
 
 export default function App() {
   const [state, setState] = useState(data)
@@ -84,23 +85,26 @@ export default function App() {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId='columns' direction='horizontal' type='column'>
-        {(providedr) => (
-          <div
-            {...providedr.droppableProps}
-            ref={providedr.innerRef}
-            className='flex justify-center border p-8 h-screen w-screen'
-          >
-            {state.columnOrder.map((id: string, i: number) => {
-              const col = state.columns[id]
-              const tasks = col.taskIds.map((taskid) => state.tasks[taskid])
-              return <Column key={id} column={col} tasks={tasks} index={i} />
-            })}
-            {providedr.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <div>
+      {/* <Search /> */}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId='columns' direction='horizontal' type='column'>
+          {(providedr) => (
+            <div
+              {...providedr.droppableProps}
+              ref={providedr.innerRef}
+              className='flex justify-center border h-fit w-full'
+            >
+              {state.columnOrder.map((id: string, i: number) => {
+                const col = state.columns[id]
+                const tasks = col.taskIds.map((taskid) => state.tasks[taskid])
+                return <Column key={id} column={col} tasks={tasks} index={i} />
+              })}
+              {providedr.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </div>
   )
 }

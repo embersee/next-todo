@@ -1,6 +1,6 @@
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import Tasks from './Tasks'
-import { ColumnProps, Task } from '../ts/interfaces'
+import { ColumnProps } from '../ts/interfaces'
 
 const Column = ({ column, tasks, index }: ColumnProps) => (
   <Draggable draggableId={column.id} index={index}>

@@ -89,21 +89,15 @@ export default function App() {
 
   return (
     <>
-      <div className='m-4 flex justify-center '>
-        <Search
-          text={text}
-          setText={setText}
-          state={state}
-          setState={setState}
-        />
-      </div>
+      <Search text={text} setText={setText} state={state} setState={setState} />
+
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
           {(providedr) => (
             <div
               {...providedr.droppableProps}
               ref={providedr.innerRef}
-              className='flex justify-center border h-fit w-full'
+              className='flex justify-center h-fit w-full'
             >
               {state.columnOrder.map((id, i) => {
                 const col = state.columns[id]

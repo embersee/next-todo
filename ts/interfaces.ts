@@ -34,6 +34,6 @@ export interface Data {
 export interface Search {
   text: string
   setText: Dispatch<SetStateAction<string>>
-  state: Data | null
-  setState: Dispatch<SetStateAction<Data | null>>  
+  state: Data
+  setState: Dispatch<SetStateAction<Data>>  
 }

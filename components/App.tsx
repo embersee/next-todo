@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import Column from './Column'
-import { data } from './Data'
+import { data } from '../src/Data'
 import Search from './Search'
 
 export default function App() {
   const [state, setState] = useState(data)
+  const [text, setText] = useState('')
 
   const onDragEnd = (res: DropResult) => {
     const { destination, source, draggableId, type } = res
@@ -13,6 +14,8 @@ export default function App() {
     if (!destination) {
       return
     }
+
+    //dropped task in the origin location
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
@@ -20,21 +23,20 @@ export default function App() {
       return
     }
 
-    //move columns
+    //move columns order
     if (type === 'column') {
       const newColumnOrder = [...state.columnOrder]
       newColumnOrder.splice(source.index, 1)
       newColumnOrder.splice(destination.index, 0, draggableId)
 
-      const newState = {
-        ...state,
+      setState((prev) => ({
+        ...prev,
         columnOrder: newColumnOrder,
-      }
-      setState(newState)
+      }))
       return
     }
 
-    //move inside columns
+    //move tasks inside columns
     const startcol = state.columns[source.droppableId]
     const endcol = state.columns[destination.droppableId]
 
@@ -48,45 +50,53 @@ export default function App() {
         taskIds: tasks,
       }
 
-      const newState = {
-        ...state,
+      setState((prev) => ({
+        ...prev,
         columns: {
-          ...state.columns,
+          ...prev.columns,
           [newCol.id]: newCol,
         },
-      }
-
-      setState(newState)
+      }))
       return
     }
 
-    //move between columns
+    //move tasks between columns
     const startTaskIds = [...startcol.taskIds]
     startTaskIds.splice(source.index, 1)
+
     const newStart = {
       ...startcol,
       taskIds: startTaskIds,
     }
+
     const endTaskIds = [...endcol.taskIds]
     endTaskIds.splice(destination.index, 0, draggableId)
+
     const newEnd = {
       ...endcol,
       taskIds: endTaskIds,
     }
-    const newState = {
-      ...state,
+
+    setState((prev) => ({
+      ...prev,
       columns: {
-        ...state.columns,
+        ...prev.columns,
         [newStart.id]: newStart,
         [newEnd.id]: newEnd,
       },
-    }
-    setState(newState)
+    }))
   }
 
   return (
-    <div>
-      {/* <Search /> */}
+    <>
+      <div className='m-4 flex justify-center '>
+        <Search
+          text={text}
+          setText={setText}
+          state={state}
+          setState={setState}
+        />
+      </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
           {(providedr) => (
@@ -95,7 +105,7 @@ export default function App() {
               ref={providedr.innerRef}
               className='flex justify-center border h-fit w-full'
             >
-              {state.columnOrder.map((id: string, i: number) => {
+              {state.columnOrder.map((id, i) => {
                 const col = state.columns[id]
                 const tasks = col.taskIds.map((taskid) => state.tasks[taskid])
                 return <Column key={id} column={col} tasks={tasks} index={i} />
@@ -105,6 +115,6 @@ export default function App() {
           )}
         </Droppable>
       </DragDropContext>
-    </div>
+    </>
   )
 }

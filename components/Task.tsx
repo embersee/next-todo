@@ -66,7 +66,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           {...draggableProps}
           {...dragHandleProps}
           ref={innerRef}
-          className={`border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] ${
+          className={`bg-white dark:bg-black border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] ${
             isFocus
               ? ' border-orange-500'
               : isBlur
@@ -88,7 +88,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
               onFocus={focusHandler}
               onBlur={blurHandler}
               placeholder='Type your task...'
-              className={`bg-black text-md outline-none `}
+              className={`dark:bg-black text-md outline-none `}
             ></input>
           )}
         </div>

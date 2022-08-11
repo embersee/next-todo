@@ -24,3 +24,51 @@ a {
     background: black;
   }
 }
+
+@layer components {
+  /* .my-react-select-container {
+  } */
+  .my-react-select-container .my-react-select__control {
+    @apply bg-white text-black dark:text-white dark:bg-black border-2 dark:border-white w-32 ml-2 select-none;
+  }
+
+  .my-react-select-container .my-react-select__control--is-focused {
+    @apply shadow-none text-black dark:text-white dark:bg-black dark:border-white;
+  }
+
+  .my-react-select__option .my-react-select__option--is-focused,
+  .my-react-select__option .my-react-select__option--is-selected {
+    @apply text-md text-black dark:text-white dark:bg-black dark:border-white;
+  }
+
+  .my-react-select-container .my-react-select__menu {
+    @apply w-32 ml-2 bg-white text-black border-2 dark:border-white dark:text-white dark:bg-black shadow-none;
+  }
+
+  .my-react-select-container .my-react-select__option {
+    @apply bg-white text-black hover:bg-blue-600 dark:text-white dark:bg-black dark:border-white shadow-none;
+  }
+
+  .my-react-select__option
+    .my-react-select__option--is-focused
+    .my-react-select__option--is-selected {
+    @apply bg-rose-500;
+  }
+
+  .my-react-select-container .my-react-select__placeholder {
+    @apply text-black shadow-none dark:text-white;
+  }
+  /* .my-react-select-container .my-react-select__option--is-focused {
+    @apply bg-neutral-200 dark:bg-neutral-800;
+  } */
+
+  .my-react-select-container .my-react-select__indicator-separator {
+    @apply text-black dark:text-white dark:bg-black;
+  }
+
+  .my-react-select-container .my-react-select__input-container,
+  .my-react-select-container .my-react-select__placeholder,
+  .my-react-select-container .my-react-select__single-value {
+    @apply dark:text-white dark:bg-black;
+  }
+}

@@ -27,23 +27,12 @@ const Input = ({ state, setState }: InputProps) => {
     }
   })
 
-  /*
-  BUG: cannot add two items at once and edit them
-  TODO: make sure user cant add two empty items at once
-  */
-
   const handleClick = () => {
     if (text === '') return
     const index = _.size(state.tasks)
     const task = `task-${index + 1}`
 
     setState((prev) => {
-      const taskID = `task-${index}`
-      const lastTaskObject = _.get(prev.tasks, taskID)
-      if (lastTaskObject.content === '')
-        return {
-          ...prev,
-        }
       return {
         ...prev,
         tasks: {
@@ -129,14 +118,16 @@ const Input = ({ state, setState }: InputProps) => {
   }
 
   return (
-    <div className='border-2 rounded-md bg-black flex justify-center items-center max-w-screen-md mx-auto mt-2'>
+    <div className='border-2 rounded-md dark:bg-black flex justify-center items-center max-w-screen-md mx-auto mt-2'>
       <Select
-        className='w-32 ml-2 select-none'
+        //className='w-32 ml-2 select-none'
+        className='my-react-select-container'
+        classNamePrefix='my-react-select'
         defaultValue={selectedOption}
         onChange={(e) => handleSelect(e)}
         options={selectOptions}
         placeholder='To do'
-        styles={colourStyles}
+        //styles={colourStyles}
         isClearable={false}
         isSearchable={false}
         // menuIsOpen
@@ -147,7 +138,7 @@ const Input = ({ state, setState }: InputProps) => {
         value={text}
         onChange={handleChange}
         placeholder='Add new item...'
-        className=' bg-black flex-auto w-96 text-md pl-4 outline-none '
+        className=' dark:bg-black flex-auto w-96 text-md pl-4 outline-none '
       ></input>
       <button
         onClick={handleClick}

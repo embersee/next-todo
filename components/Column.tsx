@@ -12,7 +12,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     isDragging: boolean,
     draggableStyle: DraggableProvidedDraggableProps
   ) => ({
-    borderColor: isDragging ? '#2563eb' : 'white',
+    borderColor: isDragging ? '#2563eb' : 'inherit',
     ...draggableStyle.style,
   })
 
@@ -54,12 +54,12 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
           {...draggableProps}
           // {...draggableProvided.dragHandleProps}
           ref={innerRef}
-          className='w-full border-2 rounded-md my-2 mr-2 flex flex-col max-w-xs'
+          className='w-full bg-white dark:bg-black border-2 border-black dark:border-white rounded-md my-2 mr-2 flex flex-col max-w-xs'
           style={getItemStyle(isDragging, draggableProps)}
         >
           <h1
             {...dragHandleProps}
-            className='text-2xl font-bold flex justify-center m-2 '
+            className='text-2xl font-bold flex justify-center mx-2 pt-2'
           >
             {column.title}
           </h1>
@@ -69,7 +69,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                 <div
                   ref={innerRef}
                   {...droppableProps}
-                  className='flex flex-col flex-grow p-2 '
+                  className='flex flex-col flex-grow px-2 pb-2 '
                 >
                   {tasks.map((task, i) => (
                     <Task

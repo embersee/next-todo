@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Search } from '../ts/interfaces'
+import { InputProps } from '../ts/interfaces'
 import Select, { SingleValue, StylesConfig } from 'react-select'
 import _ from 'lodash'
 
-const Search = ({ text, setText, state, setState }: Search) => {
+const Input = ({ text, setText, state, setState }: InputProps) => {
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectedColumn, setSelectedColumn] = useState('column-1')
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -62,7 +62,6 @@ const Search = ({ text, setText, state, setState }: Search) => {
 
   const handleSelect = (newSelections: SingleValue<SelectValue>) => {
     if (newSelections) {
-      console.log(newSelections.value)
       setSelectedColumn(newSelections.value)
     }
   }
@@ -76,6 +75,7 @@ const Search = ({ text, setText, state, setState }: Search) => {
       borderRadius: '0.375rem',
       outline: 'none',
       outlineWidth: 0,
+      boxShadow: 'none',
       marginBottom: 0,
     }),
     menuList: (provider, state) => ({
@@ -104,6 +104,7 @@ const Search = ({ text, setText, state, setState }: Search) => {
       marginBottom: 0,
       outline: 'none',
       outlineWidth: 0,
+      boxShadow: 'none',
       height: '40px',
     }),
     placeholder: (provided, state) => ({
@@ -113,7 +114,7 @@ const Search = ({ text, setText, state, setState }: Search) => {
   }
 
   return (
-    <div className='border-2 rounded-md bg-black flex items-center mx-20'>
+    <div className='border-2 rounded-md bg-black flex justify-center items-center max-w-screen-md mx-auto mt-2'>
       <Select
         className='w-32 ml-2 select-none'
         defaultValue={selectedOption}
@@ -143,4 +144,4 @@ const Search = ({ text, setText, state, setState }: Search) => {
   )
 }
 
-export default Search
+export default Input

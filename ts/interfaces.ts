@@ -31,7 +31,7 @@ export interface Data {
   columnOrder: Array<string>
 }
 
-export interface Search {
+export interface InputProps {
   text: string
   setText: Dispatch<SetStateAction<string>>
   state: Data

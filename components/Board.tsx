@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import Column from './Column'
 import { data } from '../src/Data'
-import Search from './Search'
+import Input from './Input'
 
-export default function App() {
+export default function Board() {
   const [state, setState] = useState(data)
   const [text, setText] = useState('')
 
@@ -89,14 +89,13 @@ export default function App() {
 
   return (
     <>
-      <Search text={text} setText={setText} state={state} setState={setState} />
-
+      <Input text={text} setText={setText} state={state} setState={setState} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
-          {(providedr) => (
+          {({ droppableProps, innerRef, placeholder }, snapshot) => (
             <div
-              {...providedr.droppableProps}
-              ref={providedr.innerRef}
+              {...droppableProps}
+              ref={innerRef}
               className='flex justify-center h-fit w-full'
             >
               {state.columnOrder.map((id, i) => {
@@ -104,7 +103,7 @@ export default function App() {
                 const tasks = col.taskIds.map((taskid) => state.tasks[taskid])
                 return <Column key={id} column={col} tasks={tasks} index={i} />
               })}
-              {providedr.placeholder}
+              {placeholder}
             </div>
           )}
         </Droppable>

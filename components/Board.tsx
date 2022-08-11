@@ -6,7 +6,6 @@ import Input from './Input'
 
 export default function Board() {
   const [state, setState] = useState(data)
-  const [text, setText] = useState('')
 
   const onDragEnd = (res: DropResult) => {
     const { destination, source, draggableId, type } = res
@@ -89,10 +88,10 @@ export default function Board() {
 
   return (
     <>
-      <Input text={text} setText={setText} state={state} setState={setState} />
+      <Input state={state} setState={setState} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
-          {({ droppableProps, innerRef, placeholder }, snapshot) => (
+          {({ droppableProps, innerRef, placeholder }) => (
             <div
               {...droppableProps}
               ref={innerRef}
@@ -101,7 +100,15 @@ export default function Board() {
               {state.columnOrder.map((id, i) => {
                 const col = state.columns[id]
                 const tasks = col.taskIds.map((taskid) => state.tasks[taskid])
-                return <Column key={id} column={col} tasks={tasks} index={i} />
+                return (
+                  <Column
+                    key={id}
+                    column={col}
+                    tasks={tasks}
+                    index={i}
+                    setState={setState}
+                  />
+                )
               })}
               {placeholder}
             </div>

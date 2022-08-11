@@ -16,12 +16,14 @@ export interface ColumnProps {
   tasks: Task[]
   index: number
   column: Column
-  
+  setState: Dispatch<SetStateAction<Data>>  
 }
 
 export interface TaskProps {
   task: Task
   index: number
+  setState: Dispatch<SetStateAction<Data>> 
+  column: string
   //provider?: React.ReactElement<HTMLElement, string | React.JSXElementConstructor<any>> | null | undefined
 }
 
@@ -32,8 +34,6 @@ export interface Data {
 }
 
 export interface InputProps {
-  text: string
-  setText: Dispatch<SetStateAction<string>>
   state: Data
   setState: Dispatch<SetStateAction<Data>>  
 }

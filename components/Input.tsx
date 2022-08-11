@@ -3,7 +3,8 @@ import { InputProps } from '../ts/interfaces'
 import Select, { SingleValue, StylesConfig } from 'react-select'
 import _ from 'lodash'
 
-const Input = ({ text, setText, state, setState }: InputProps) => {
+const Input = ({ state, setState }: InputProps) => {
+  const [text, setText] = useState('')
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectedColumn, setSelectedColumn] = useState('column-1')
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -14,6 +15,7 @@ const Input = ({ text, setText, state, setState }: InputProps) => {
     if (text === '') return
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
+        console.table(state.tasks)
         event.preventDefault()
         handleClick()
         setText('')
@@ -25,26 +27,39 @@ const Input = ({ text, setText, state, setState }: InputProps) => {
     }
   })
 
+  /*
+  BUG: cannot add two items at once and edit them
+  TODO: make sure user cant add two empty items at once
+  */
+
   const handleClick = () => {
     if (text === '') return
     const index = _.size(state.tasks)
-    const task = `task-${index + 2}`
+    const task = `task-${index + 1}`
 
-    setState((prev) => ({
-      ...prev,
-      tasks: {
-        ...prev.tasks,
-        [task]: { id: task, content: text },
-      },
-      columns: {
-        ...prev.columns,
-        [selectedColumn]: {
-          id: selectedColumn,
-          title: prev.columns[selectedColumn].title,
-          taskIds: [...prev.columns[selectedColumn].taskIds, task],
+    setState((prev) => {
+      const taskID = `task-${index}`
+      const lastTaskObject = _.get(prev.tasks, taskID)
+      if (lastTaskObject.content === '')
+        return {
+          ...prev,
+        }
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task]: { id: task, content: text },
         },
-      },
-    }))
+        columns: {
+          ...prev.columns,
+          [selectedColumn]: {
+            id: selectedColumn,
+            title: prev.columns[selectedColumn].title,
+            taskIds: [...prev.columns[selectedColumn].taskIds, task],
+          },
+        },
+      }
+    })
 
     setText('')
   }

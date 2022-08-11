@@ -15,7 +15,6 @@ const Input = ({ state, setState }: InputProps) => {
     if (text === '') return
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-        console.table(state.tasks)
         event.preventDefault()
         handleClick()
         setText('')
@@ -70,64 +69,63 @@ const Input = ({ state, setState }: InputProps) => {
     }
   }
 
-  const colourStyles: StylesConfig<SelectValue, false> = {
-    control: (provided, state) => ({
-      ...provided,
-      background: 'black',
-      height: '100%',
-      border: '2px solid white',
-      borderRadius: '0.375rem',
-      outline: 'none',
-      outlineWidth: 0,
-      boxShadow: 'none',
-      marginBottom: 0,
-    }),
-    menuList: (provider, state) => ({
-      ...provider,
-      color: 'white',
-      background: 'black',
-      border: '2px solid white',
-      borderRadius: '0.375rem',
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      'fontWeight': state.isSelected ? 'bold' : 'normal',
-      'color': 'white',
-      'background': state.isSelected ? 'rgb(37,99,235)' : 'black',
-      ':hover': {
-        background: 'rgb(37,99,235)',
-      },
-    }),
-    singleValue: (provided, state) => ({
-      ...provided,
-      background: 'black',
-      color: 'white',
-    }),
-    container: (provided, state) => ({
-      ...provided,
-      marginBottom: 0,
-      outline: 'none',
-      outlineWidth: 0,
-      boxShadow: 'none',
-      height: '40px',
-    }),
-    placeholder: (provided, state) => ({
-      ...provided,
-      color: 'white',
-    }),
-  }
+  // replaced with tailwind css in globals.ccs
+  // const colourStyles: StylesConfig<SelectValue, false> = {
+  //   control: (provided, state) => ({
+  //     ...provided,
+  //     background: 'black',
+  //     height: '100%',
+  //     border: '2px solid white',
+  //     borderRadius: '0.375rem',
+  //     outline: 'none',
+  //     outlineWidth: 0,
+  //     boxShadow: 'none',
+  //     marginBottom: 0,
+  //   }),
+  //   menuList: (provider, state) => ({
+  //     ...provider,
+  //     color: 'white',
+  //     background: 'black',
+  //     border: '2px solid white',
+  //     borderRadius: '0.375rem',
+  //   }),
+  //   option: (provided, state) => ({
+  //     ...provided,
+  //     'fontWeight': state.isSelected ? 'bold' : 'normal',
+  //     'color': 'white',
+  //     'background': state.isSelected ? 'rgb(37,99,235)' : 'black',
+  //     ':hover': {
+  //       background: 'rgb(37,99,235)',
+  //     },
+  //   }),
+  //   singleValue: (provided, state) => ({
+  //     ...provided,
+  //     background: 'black',
+  //     color: 'white',
+  //   }),
+  //   container: (provided, state) => ({
+  //     ...provided,
+  //     marginBottom: 0,
+  //     outline: 'none',
+  //     outlineWidth: 0,
+  //     boxShadow: 'none',
+  //     height: '40px',
+  //   }),
+  //   placeholder: (provided, state) => ({
+  //     ...provided,
+  //     color: 'white',
+  //   }),
+  // }
 
   return (
     <div className='border-2 rounded-md dark:bg-black flex justify-center items-center max-w-screen-md mx-auto mt-2'>
       <Select
-        //className='w-32 ml-2 select-none'
         className='my-react-select-container'
         classNamePrefix='my-react-select'
         defaultValue={selectedOption}
         onChange={(e) => handleSelect(e)}
         options={selectOptions}
         placeholder='To do'
-        //styles={colourStyles}
         isClearable={false}
         isSearchable={false}
         // menuIsOpen

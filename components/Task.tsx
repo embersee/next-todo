@@ -60,7 +60,11 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
   }
 
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable
+      draggableId={task.id}
+      index={index}
+      isDragDisabled={isFocus || isBlur}
+    >
       {({ draggableProps, dragHandleProps, innerRef }, { isDragging }) => (
         <div
           {...draggableProps}

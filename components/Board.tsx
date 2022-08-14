@@ -86,6 +86,26 @@ export default function Board() {
     }))
   }
 
+  const addColumn = () => {
+    setState((prev) => {
+      const columnIndex = prev.columnOrder.length
+      const newColumn = `column-${columnIndex + 1}`
+      return {
+        ...prev,
+        columns: {
+          ...prev.columns,
+          [newColumn]: {
+            id: newColumn,
+            title: '',
+            taskIds: [],
+          },
+        },
+
+        columnOrder: [...prev.columnOrder, newColumn],
+      }
+    })
+  }
+
   return (
     <>
       <Input state={state} setState={setState} />
@@ -111,6 +131,12 @@ export default function Board() {
                 )
               })}
               {placeholder}
+              <button
+                onClick={addColumn}
+                className='border-2 w-8 h-8 rounded-md text-xl m-2'
+              >
+                +
+              </button>
             </div>
           )}
         </Droppable>

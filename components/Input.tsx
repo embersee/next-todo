@@ -52,16 +52,28 @@ const Input = ({ state, setState }: InputProps) => {
     setText('')
   }
 
+  const findColumnTitle = _.mapValues(state.columns, (column) => column.title)
+  //   {
+  //     "column-1": "To do",
+  //     "column-2": "In progress",
+  //     "column-3": "Done",
+  //     "column-4": "asdsdsd"
+  // }
+  const objectEntries = Object.entries(findColumnTitle)
+  const optionsArray = []
+  for (let i = 0; i < objectEntries.length; i++) {
+    optionsArray.push({
+      value: objectEntries[i][0],
+      label: objectEntries[i][1],
+    })
+  }
+
   interface SelectValue {
     value: string
     label: string
   }
 
-  const selectOptions: SelectValue[] = [
-    { value: 'column-1', label: 'To do' },
-    { value: 'column-2', label: 'Progress' },
-    { value: 'column-3', label: 'Done' },
-  ]
+  const selectOptions: SelectValue[] = optionsArray
 
   const handleSelect = (newSelections: SingleValue<SelectValue>) => {
     if (newSelections) {

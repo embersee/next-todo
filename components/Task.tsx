@@ -7,13 +7,6 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
   const [text, setText] = useState('')
-  const getItemStyle = (
-    isDragging: boolean,
-    draggableStyle: DraggableProvidedDraggableProps
-  ) => ({
-    borderColor: isDragging ? '#2563eb' : 'white',
-    ...draggableStyle.style,
-  })
 
   useEffect(() => {
     if (text === '') return

@@ -9,6 +9,9 @@ module.exports = {
       width: {
         200: '200px',
       },
+      minHeight: {
+        400: '400px',
+      },
     },
   },
   plugins: [],

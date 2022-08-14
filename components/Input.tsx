@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import Select, { SingleValue } from 'react-select'
+
 import { InputProps } from '../ts/interfaces'
-import Select, { SingleValue, StylesConfig } from 'react-select'
 import _ from 'lodash'
 
 const Input = ({ state, setState }: InputProps) => {

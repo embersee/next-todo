@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { Draggable, DraggableProvidedDraggableProps } from 'react-beautiful-dnd'
+import { useEffect, useState } from 'react'
+
+import { Draggable } from 'react-beautiful-dnd'
 import { TaskProps } from '../ts/interfaces'
 import _ from 'lodash'
 
@@ -58,21 +59,23 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
       index={index}
       isDragDisabled={isFocus || isBlur}
     >
-      {({ draggableProps, dragHandleProps, innerRef }, { isDragging }) => (
+      {(
+        { draggableProps, dragHandleProps, innerRef },
+        { isDragging, draggingOver }
+      ) => (
         <div
           {...draggableProps}
           {...dragHandleProps}
           ref={innerRef}
-          className={`bg-white dark:bg-black border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] ${
+          className={`bg-white dark:bg-black border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] hover:border-blue-400 ${
             isFocus
-              ? ' border-orange-500'
+              ? 'border-orange-500'
               : isBlur
               ? 'border-rose-500'
               : isDragging
-              ? 'border-blue-600'
+              ? 'border-blue-400'
               : 'border-inherit'
           }`}
-          //style={getItemStyle(isDragging, draggableProps)}
         >
           {task.content !== '' ? (
             task.content

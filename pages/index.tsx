@@ -1,8 +1,9 @@
-import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
+
+import Board from '../components/Board'
 import Head from 'next/head'
 import Image from 'next/image'
-import Board from '../components/Board'
+import type { NextPage } from 'next'
 
 const Home: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)

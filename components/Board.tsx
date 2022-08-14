@@ -1,8 +1,10 @@
+import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
 import React, { useState } from 'react'
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
+
 import Column from './Column'
-import { data } from '../src/Data'
 import Input from './Input'
+import Plus from './buttons/Plus'
+import { data } from '../src/Data'
 
 export default function Board() {
   const [state, setState] = useState(data)
@@ -115,7 +117,7 @@ export default function Board() {
             <div
               {...droppableProps}
               ref={innerRef}
-              className='flex justify-center h-fit w-full'
+              className=' h-fit w-full container flex justify-center'
             >
               {state.columnOrder.map((id, i) => {
                 const col = state.columns[id]
@@ -131,12 +133,17 @@ export default function Board() {
                 )
               })}
               {placeholder}
-              <button
-                onClick={addColumn}
-                className='border-2 w-8 h-8 rounded-md text-xl m-2'
-              >
-                +
-              </button>
+
+              {state.columnOrder.length < 5 ? (
+                <button
+                  onClick={addColumn}
+                  className='border-2 w-8 h-8 rounded-md text-xl mt-2 flex flex-col justify-center'
+                >
+                  <Plus />
+                </button>
+              ) : (
+                ''
+              )}
             </div>
           )}
         </Droppable>

@@ -4,10 +4,21 @@ import Select, { SingleValue } from 'react-select'
 import { InputProps } from '../ts/interfaces'
 import _ from 'lodash'
 
+interface SelectValue {
+  value: string
+  label: string
+}
+
 const Input = ({ state, setState }: InputProps) => {
   const [text, setText] = useState('')
+  const [optionsArray, setOptionsArray] = useState([
+    { value: 'column-1', label: 'To do' },
+    { value: 'column-2', label: 'In progress' },
+    { value: 'column-3', label: 'Done' },
+  ])
+  const [error, setError] = useState(false)
   const [selectedOption, setSelectedOption] = useState(null)
-  const [selectedColumn, setSelectedColumn] = useState('column-1')
+  const [selectedColumn, setSelectedColumn] = useState(state.columnOrder[0])
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setText(e.currentTarget.value)
   }
@@ -17,6 +28,7 @@ const Input = ({ state, setState }: InputProps) => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
+        setError(false)
         handleClick()
         setText('')
       }
@@ -33,6 +45,17 @@ const Input = ({ state, setState }: InputProps) => {
     const task = `task-${index + 1}`
 
     setState((prev) => {
+      const filterEmptyTasks = _.filter(
+        prev.tasks,
+        (task) => task.content === ''
+      )
+
+      if (filterEmptyTasks.length > 0) {
+        setError(true)
+        return {
+          ...prev,
+        }
+      }
       return {
         ...prev,
         tasks: {
@@ -53,26 +76,26 @@ const Input = ({ state, setState }: InputProps) => {
     setText('')
   }
 
-  const findColumnTitle = _.mapValues(state.columns, (column) => column.title)
-  //   {
-  //     "column-1": "To do",
-  //     "column-2": "In progress",
-  //     "column-3": "Done",
-  //     "column-4": "asdsdsd"
-  // }
-  const objectEntries = Object.entries(findColumnTitle)
-  const optionsArray = []
-  for (let i = 0; i < objectEntries.length; i++) {
-    optionsArray.push({
-      value: objectEntries[i][0],
-      label: objectEntries[i][1],
-    })
-  }
+  useEffect(() => {
+    const columnsWithTitles = _.pickBy(state.columns, (val) => val.title !== '')
 
-  interface SelectValue {
-    value: string
-    label: string
-  }
+    const findColumnTitle = _.mapValues(
+      columnsWithTitles,
+      (column) => column.title
+    )
+
+    const objectEntries = Object.entries(findColumnTitle)
+
+    const optionsArray = []
+    for (let i = 0; i < objectEntries.length; i++) {
+      optionsArray.push({
+        value: objectEntries[i][0],
+        label: objectEntries[i][1],
+      })
+    }
+
+    setOptionsArray(optionsArray)
+  }, [state.columnOrder, state.columns])
 
   const selectOptions: SelectValue[] = optionsArray
 
@@ -82,56 +105,12 @@ const Input = ({ state, setState }: InputProps) => {
     }
   }
 
-  // replaced with tailwind css in globals.ccs
-  // const colourStyles: StylesConfig<SelectValue, false> = {
-  //   control: (provided, state) => ({
-  //     ...provided,
-  //     background: 'black',
-  //     height: '100%',
-  //     border: '2px solid white',
-  //     borderRadius: '0.375rem',
-  //     outline: 'none',
-  //     outlineWidth: 0,
-  //     boxShadow: 'none',
-  //     marginBottom: 0,
-  //   }),
-  //   menuList: (provider, state) => ({
-  //     ...provider,
-  //     color: 'white',
-  //     background: 'black',
-  //     border: '2px solid white',
-  //     borderRadius: '0.375rem',
-  //   }),
-  //   option: (provided, state) => ({
-  //     ...provided,
-  //     'fontWeight': state.isSelected ? 'bold' : 'normal',
-  //     'color': 'white',
-  //     'background': state.isSelected ? 'rgb(37,99,235)' : 'black',
-  //     ':hover': {
-  //       background: 'rgb(37,99,235)',
-  //     },
-  //   }),
-  //   singleValue: (provided, state) => ({
-  //     ...provided,
-  //     background: 'black',
-  //     color: 'white',
-  //   }),
-  //   container: (provided, state) => ({
-  //     ...provided,
-  //     marginBottom: 0,
-  //     outline: 'none',
-  //     outlineWidth: 0,
-  //     boxShadow: 'none',
-  //     height: '40px',
-  //   }),
-  //   placeholder: (provided, state) => ({
-  //     ...provided,
-  //     color: 'white',
-  //   }),
-  // }
-
   return (
-    <div className='border-2 rounded-md dark:bg-black flex justify-center items-center max-w-screen-md mx-auto mt-2'>
+    <div
+      className={`border-2 rounded-md dark:bg-black bg-white flex justify-center items-center max-w-screen-md mx-auto mt-2 ${
+        error && 'border-rose-500'
+      }`}
+    >
       <Select
         className='my-react-select-container'
         classNamePrefix='my-react-select'

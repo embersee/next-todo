@@ -10,7 +10,7 @@ import _ from 'lodash'
 
 const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   const [title, setTitle] = useState('')
-  const [isFocus, setIsFocus] = useState(true)
+  const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -19,21 +19,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
-        setState((prev) => {
-          const columnIndex = prev.columnOrder.length
-          const newColumn = `column-${columnIndex}`
-          return {
-            ...prev,
-            columns: {
-              ...prev.columns,
-              [newColumn]: {
-                id: newColumn,
-                title: title,
-                taskIds: [],
-              },
-            },
-          }
-        })
+        handleAddColumn()
         setTitle('')
       }
     }
@@ -43,17 +29,37 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     }
   })
 
+  const handleAddColumn = () => {
+    setIsFocus(false)
+    setIsBlur(false)
+    setState((prev) => {
+      const columnIndex = prev.columnOrder.length
+      const newColumn = `column-${columnIndex}`
+      return {
+        ...prev,
+        columns: {
+          ...prev.columns,
+          [newColumn]: {
+            id: newColumn,
+            title: title,
+            taskIds: [],
+          },
+        },
+      }
+    })
+  }
+
   const handleAddTask = (column: string, text: string) => {
     setState((prev) => {
-      //check if there already is a existing new empty task
-
-      //replace lodash with .length xddddd
       const index = _.size(prev.tasks)
       const task = `task-${index + 1}`
-      const taskID = `task-${index}`
-      const lastTaskObject = _.get(prev.tasks, taskID)
+      //check if there already is a existing new empty task
+      const filterEmptyTasks = _.filter(
+        prev.tasks,
+        (task) => task.content === ''
+      )
 
-      if (lastTaskObject?.content === '')
+      if (filterEmptyTasks.length > 0)
         return {
           ...prev,
         }

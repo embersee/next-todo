@@ -14,9 +14,11 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
+        setIsFocus(false)
+        setIsBlur(false)
         setState((prev) => {
           const index = _.size(prev.tasks)
-          const task = `task-${index + 1}`
+          const task = `task-${index}`
 
           return {
             ...prev,
@@ -88,7 +90,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
               onFocus={focusHandler}
               onBlur={blurHandler}
               placeholder='Type your task...'
-              className={`dark:bg-black text-md outline-none `}
+              className={`dark:bg-black text-md outline-none w-full`}
             ></input>
           )}
         </div>

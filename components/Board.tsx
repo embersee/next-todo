@@ -4,7 +4,8 @@ import React, { useState } from 'react'
 import Column from './Column'
 import Input from './Input'
 import Plus from './buttons/Plus'
-import { data } from '../src/Data'
+import X from './buttons/X'
+import { data } from '../pages/api/data'
 
 export default function Board() {
   const [state, setState] = useState(data)
@@ -108,6 +109,22 @@ export default function Board() {
     })
   }
 
+  const deleteColumn = () => {
+    setState((prev) => {
+      return {
+        ...prev,
+        columns: {
+          ...prev.columns,
+          [prev.columnOrder[prev.columnOrder.length - 1]]: {
+            id: '',
+            title: '',
+            taskIds: [],
+          },
+        },
+        columnOrder: [...prev.columnOrder.slice(0, -1)],
+      }
+    })
+  }
   return (
     <>
       <Input state={state} setState={setState} />
@@ -135,12 +152,20 @@ export default function Board() {
               {placeholder}
 
               {state.columnOrder.length < 5 ? (
-                <button
-                  onClick={addColumn}
-                  className='border-2 w-8 h-8 rounded-md text-xl mt-2 flex flex-col justify-center'
-                >
-                  <Plus />
-                </button>
+                <div className='flex flex-col mb-2 mt-2'>
+                  <button
+                    onClick={addColumn}
+                    className='border-2 bg-white dark:bg-black w-8 h-8 rounded-md mb-2 flex flex-col justify-center hover:border-green-500 transition-colors duration-200'
+                  >
+                    <Plus />
+                  </button>
+                  <button
+                    onClick={deleteColumn}
+                    className='border-2 bg-white dark:bg-black w-8 h-8 rounded-md flex flex-col justify-center hover:border-rose-500 transition-colors duration-200'
+                  >
+                    <X />
+                  </button>
+                </div>
               ) : (
                 ''
               )}

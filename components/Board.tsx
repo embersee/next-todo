@@ -1,10 +1,9 @@
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
+import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import React, { useState } from 'react'
 
 import Column from './Column'
 import Input from './Input'
-import Plus from './buttons/Plus'
-import X from './buttons/X'
 import { data } from '../pages/api/data'
 
 export default function Board() {
@@ -151,24 +150,24 @@ export default function Board() {
               })}
               {placeholder}
 
-              {state.columnOrder.length < 5 ? (
-                <div className='flex flex-col mb-2 mt-2'>
+              <div className='flex flex-col mb-2 mt-2'>
+                {state.columnOrder.length < 5 ? (
                   <button
                     onClick={addColumn}
-                    className='border-2 bg-white dark:bg-black w-8 h-8 rounded-md mb-2 flex flex-col justify-center hover:border-green-500 transition-colors duration-200'
+                    className='border-2 bg-white dark:bg-black p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
                   >
-                    <Plus />
+                    <PlusIcon className='h-4 w-4' />
                   </button>
-                  <button
-                    onClick={deleteColumn}
-                    className='border-2 bg-white dark:bg-black w-8 h-8 rounded-md flex flex-col justify-center hover:border-rose-500 transition-colors duration-200'
-                  >
-                    <X />
-                  </button>
-                </div>
-              ) : (
-                ''
-              )}
+                ) : (
+                  ''
+                )}
+                <button
+                  onClick={deleteColumn}
+                  className='border-2 bg-white dark:bg-black p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                >
+                  <MinusIcon className='h-4 w-4' />
+                </button>
+              </div>
             </div>
           )}
         </Droppable>

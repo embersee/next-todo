@@ -1,18 +1,17 @@
+import { ChevronUpIcon, MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { useEffect, useState } from 'react'
 
-import Collapse from './buttons/Collapse'
 import { ColumnProps } from '../ts/interfaces'
-import Plus from './buttons/Plus'
 import Task from './Task'
-import X from './buttons/X'
+import { Tree } from './Tree'
 import _ from 'lodash'
 
 const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   const [title, setTitle] = useState('')
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [isOpen, setOpen] = useState(true)
 
   useEffect(() => {
     if (title === '') return
@@ -98,10 +97,6 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     })
   }
 
-  const handleCollapseColumn = () => {
-    setIsCollapsed((prev) => !prev)
-  }
-
   const titleHandler = (input: string) => setTitle(input)
   const blurHandler = () => {
     setIsFocus(false)
@@ -117,11 +112,12 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         <div
           {...draggableProps}
           ref={innerRef}
-          className={`w-full border-2 bg-white dark:bg-black border-black rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit ${
+          className={`w-full border-2 bg-white dark:bg-black border-black rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit transition-colors duration-300 ${
             isDragging ? 'border-blue-600' : 'border-inherit'
           }`}
         >
-          <div className='pt-2 mx-2 box-border' {...dragHandleProps}>
+          <div className='p-2 box-border flex flex-row justify-start items-center outline-none'>
+            <PlusIcon className='h-7 w-7' onClick={() => setOpen(!isOpen)} />
             {column.title === '' ? (
               <input
                 autoFocus
@@ -140,59 +136,55 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                 placeholder='Type column name...'
               />
             ) : (
-              <h1 className='text-2xl font-bold flex justify-center border-2 border-white dark:border-black'>
+              <h1
+                {...dragHandleProps}
+                className='text-2xl font-bold flex justify-center border-2 border-white dark:border-black'
+              >
                 {column.title}
               </h1>
             )}
           </div>
           <Droppable droppableId={column.id} type='task'>
-            {({ droppableProps, innerRef, placeholder }) => (
+            {(
+              { droppableProps, innerRef, placeholder },
+              { isDraggingOver }
+            ) => (
               <div className='container flex flex-col justify-end h-fit'>
-                <div
-                  ref={innerRef}
-                  {...droppableProps}
-                  className={`flex flex-col flex-grow px-2 pb-2 ${
-                    isCollapsed ? 'min-h-400' : 'hidden'
-                  }`}
-                >
-                  {isCollapsed && (
-                    <>
-                      {tasks.map((task, i) => (
-                        <Task
-                          key={task.id}
-                          task={task}
-                          index={i}
-                          setState={setState}
-                          column={column.id}
-                        />
-                      ))}
-                    </>
-                  )}
-                  {placeholder}
-                </div>
+                <Tree isOpen={isOpen}>
+                  <div
+                    ref={innerRef}
+                    {...droppableProps}
+                    className={`flex flex-col flex-grow px-2 pb-2 transition-colors duration-500 min-h-400
+                    } ${isDraggingOver ? 'bg-blue-500/10' : 'bg-inherit'}`}
+                  >
+                    {tasks.map((task, i) => (
+                      <Task
+                        key={task.id}
+                        task={task}
+                        index={i}
+                        setState={setState}
+                        column={column.id}
+                      />
+                    ))}
 
-                <div className='flex flex-row mb-2 pl-2 mt-2'>
-                  <button
-                    className='border-2 w-8 h-8 rounded-md flex flex-col justify-center hover:border-green-500 transition-colors duration-200'
-                    onClick={() => handleAddTask(column.id, '')}
-                  >
-                    <Plus />
-                  </button>
-                  <button
-                    className='border-2 w-8 h-8 rounded-md ml-2 flex flex-col justify-center hover:border-rose-500 transition-colors duration-200'
-                    onClick={() => handleDeleteTask(column.id)}
-                  >
-                    <X />
-                  </button>
-                  <button
-                    className={`border-2 w-8 h-8 rounded-md ml-2 flex flex-col justify-center hover:border-orange-500 transition-colors duration-200 ${
-                      !isCollapsed && 'rotate-180'
-                    }`}
-                    onClick={handleCollapseColumn}
-                  >
-                    <Collapse />
-                  </button>
-                </div>
+                    {placeholder}
+                  </div>
+
+                  <div className='flex flex-row pl-2 mt-2'>
+                    <button
+                      className='border-2 p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                      onClick={() => handleAddTask(column.id, '')}
+                    >
+                      <PlusIcon className='h-4 w-4' />
+                    </button>
+                    <button
+                      className='border-2 p-1 mb-2 rounded-md ml-2 hover:border-rose-500 transition-colors duration-200'
+                      onClick={() => handleDeleteTask(column.id)}
+                    >
+                      <MinusIcon className='h-4 w-4' />
+                    </button>
+                  </div>
+                </Tree>
               </div>
             )}
           </Droppable>

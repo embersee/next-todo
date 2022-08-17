@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      willChange: {
+        'transform-opacity-height': 'transform, opacity, height',
+      },
       width: {
         200: '200px',
       },

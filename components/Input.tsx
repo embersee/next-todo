@@ -107,17 +107,17 @@ const Input = ({ state, setState }: InputProps) => {
 
   return (
     <div
-      className={`border-2 rounded-md dark:bg-black bg-white flex justify-center items-center max-w-screen-md mx-auto mt-2 ${
+      className={`border-2 rounded-md dark:bg-black bg-white flex justify-center items-center max-w-screen-md mx-auto mt-2 transition-color ${
         error && 'border-rose-500'
       }`}
     >
       <Select
-        className='my-react-select-container'
+        className='my-react-select-container '
         classNamePrefix='my-react-select'
         defaultValue={selectedOption}
         onChange={(e) => handleSelect(e)}
         options={selectOptions}
-        placeholder='To do'
+        placeholder={optionsArray[0].label}
         isClearable={false}
         isSearchable={false}
         // menuIsOpen
@@ -128,7 +128,7 @@ const Input = ({ state, setState }: InputProps) => {
         value={text}
         onChange={handleChange}
         placeholder='Add new item...'
-        className=' dark:bg-black flex-auto w-96 text-md pl-4 outline-none '
+        className=' dark:bg-black flex-auto w-auto text-md pl-4 outline-none '
       ></input>
       <button
         onClick={handleClick}

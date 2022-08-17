@@ -107,7 +107,11 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     setIsBlur(false)
   }
   return (
-    <Draggable draggableId={column.id} index={index}>
+    <Draggable
+      draggableId={column.id}
+      index={index}
+      isDragDisabled={column.title === ''}
+    >
       {({ draggableProps, dragHandleProps, innerRef }, { isDragging }) => (
         <div
           {...draggableProps}
@@ -116,13 +120,19 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
             isDragging ? 'border-blue-600' : 'border-inherit'
           }`}
         >
-          <div className='p-2 box-border flex flex-row justify-start items-center outline-none'>
-            <PlusIcon className='h-7 w-7' onClick={() => setOpen(!isOpen)} />
+          <div
+            {...dragHandleProps}
+            className='p-2 box-border flex flex-row justify-start items-center '
+          >
+            <PlusIcon
+              className='h-7 w-7 shrink-0 cursor-pointer '
+              onClick={() => setOpen(!isOpen)}
+            />
             {column.title === '' ? (
               <input
                 autoFocus
                 type='text'
-                className={`dark:bg-black text-2xl font-bold max-w-full text-center outline-none ${
+                className={`dark:bg-black text-2xl font-bold w-full outline-none pl-1 transition-colors duration-300  ${
                   isFocus
                     ? 'border-2 rounded-md border-orange-500'
                     : isBlur
@@ -136,15 +146,16 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                 placeholder='Type column name...'
               />
             ) : (
-              <h1
-                {...dragHandleProps}
-                className='text-2xl font-bold flex justify-center border-2 border-white dark:border-black'
-              >
+              <h1 className='text-2xl ml-1 font-bold flex justify-center border-2 border-white dark:border-black'>
                 {column.title}
               </h1>
             )}
           </div>
-          <Droppable droppableId={column.id} type='task'>
+          <Droppable
+            droppableId={column.id}
+            type='task'
+            isDropDisabled={!isOpen}
+          >
             {(
               { droppableProps, innerRef, placeholder },
               { isDraggingOver }

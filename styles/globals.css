@@ -36,7 +36,7 @@ a {
   /* .my-react-select-container {
   } */
   .my-react-select-container .my-react-select__control {
-    @apply bg-white text-black dark:text-white dark:bg-black border-2 dark:border-white w-32 ml-2 select-none;
+    @apply w-auto bg-white text-black dark:text-white dark:bg-black border-2 dark:border-white ml-2 select-none;
   }
 
   .my-react-select-container .my-react-select__control--is-focused {

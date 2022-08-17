@@ -119,14 +119,14 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
             {...draggableProps}
             {...dragHandleProps}
             ref={innerRef}
-            className={`bg-white dark:bg-black border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] transition-colors duration-300 hover:border-blue-400 ${
+            className={`bg-white dark:bg-black border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] transition-colors duration-300  ${
               isFocus
                 ? 'transition-none border-orange-500 '
                 : isBlur
                 ? 'border-rose-500 '
                 : snapshot.isDragging
-                ? 'border-blue-400 '
-                : 'border-inherit'
+                ? ' border-blue-400 '
+                : 'transition-none hover:border-blue-400'
             }`}
           >
             {task.content !== '' ? (

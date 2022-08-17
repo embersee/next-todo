@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 
 import Column from './Column'
 import Input from './Input'
+import _ from 'lodash'
 import { data } from '../pages/api/data'
 
 export default function Board() {
@@ -92,6 +93,17 @@ export default function Board() {
     setState((prev) => {
       const columnIndex = prev.columnOrder.length
       const newColumn = `column-${columnIndex + 1}`
+
+      const filterEmptyColumns = _.filter(
+        prev.columns,
+        (column) => column.title === ''
+      )
+
+      if (filterEmptyColumns.length > 0)
+        return {
+          ...prev,
+        }
+
       return {
         ...prev,
         columns: {
@@ -110,6 +122,15 @@ export default function Board() {
 
   const deleteColumn = () => {
     setState((prev) => {
+      const filterEmptyColumns = _.filter(
+        prev.columns,
+        (column) => column.title === ''
+      )
+
+      if (filterEmptyColumns.length > 0)
+        return {
+          ...prev,
+        }
       return {
         ...prev,
         columns: {

@@ -1,4 +1,4 @@
-import { ChevronUpIcon, MinusIcon, PlusIcon } from '@radix-ui/react-icons'
+import { ChevronDownIcon, MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { useEffect, useState } from 'react'
 
@@ -12,6 +12,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
   const [isOpen, setOpen] = useState(true)
+  const [isDraggingOver, setIsDraggingOver] = useState(false)
 
   useEffect(() => {
     if (title === '') return
@@ -34,6 +35,18 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     setState((prev) => {
       const columnIndex = prev.columnOrder.length
       const newColumn = `column-${columnIndex}`
+
+      //check if there already is a existing new empty task
+      const filterEmptyColumns = _.filter(
+        prev.columns,
+        (column) => column.title === ''
+      )
+
+      if (filterEmptyColumns.length > 0)
+        return {
+          ...prev,
+        }
+
       return {
         ...prev,
         columns: {
@@ -83,6 +96,16 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
 
   const handleDeleteTask = (column: string) => {
     setState((prev) => {
+      //check if there already is a existing new empty task
+      const filterEmptyTasks = _.filter(
+        prev.tasks,
+        (task) => task.content === ''
+      )
+
+      if (filterEmptyTasks.length > 0)
+        return {
+          ...prev,
+        }
       return {
         ...prev,
         columns: {
@@ -116,16 +139,18 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         <div
           {...draggableProps}
           ref={innerRef}
-          className={`w-full border-2 bg-white dark:bg-black border-black rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit transition-colors duration-300 ${
+          className={`w-full border-2 bg-white dark:bg-black dark:border-whiteborder-black rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit transition-colors duration-700 ${
             isDragging ? 'border-blue-600' : 'border-inherit'
-          }`}
+          } ${isDraggingOver ? 'border-blue-600' : 'border-inherit'}`}
         >
           <div
             {...dragHandleProps}
             className='p-2 box-border flex flex-row justify-start items-center '
           >
-            <PlusIcon
-              className='h-7 w-7 shrink-0 cursor-pointer '
+            <ChevronDownIcon
+              className={`h-6 w-6 shrink-0 cursor-pointer transition-transform ${
+                isOpen && 'rotate-180'
+              }`}
               onClick={() => setOpen(!isOpen)}
             />
             {column.title === '' ? (
@@ -159,45 +184,47 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
             {(
               { droppableProps, innerRef, placeholder },
               { isDraggingOver }
-            ) => (
-              <div className='container flex flex-col justify-end h-fit'>
-                <Tree isOpen={isOpen}>
-                  <div
-                    ref={innerRef}
-                    {...droppableProps}
-                    className={`flex flex-col flex-grow px-2 pb-2 transition-colors duration-500 min-h-400
-                    } ${isDraggingOver ? 'bg-blue-500/10' : 'bg-inherit'}`}
-                  >
-                    {tasks.map((task, i) => (
-                      <Task
-                        key={task.id}
-                        task={task}
-                        index={i}
-                        setState={setState}
-                        column={column.id}
-                      />
-                    ))}
-
-                    {placeholder}
-                  </div>
-
-                  <div className='flex flex-row pl-2 mt-2'>
-                    <button
-                      className='border-2 p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
-                      onClick={() => handleAddTask(column.id, '')}
+            ) => {
+              setIsDraggingOver(isDraggingOver)
+              return (
+                <div className='container flex flex-col justify-end h-fit'>
+                  <Tree isOpen={isOpen}>
+                    <div
+                      ref={innerRef}
+                      {...droppableProps}
+                      className={`flex flex-col flex-grow px-2 pb-2 min-h-400 transition-colors duration-300`}
                     >
-                      <PlusIcon className='h-4 w-4' />
-                    </button>
-                    <button
-                      className='border-2 p-1 mb-2 rounded-md ml-2 hover:border-rose-500 transition-colors duration-200'
-                      onClick={() => handleDeleteTask(column.id)}
-                    >
-                      <MinusIcon className='h-4 w-4' />
-                    </button>
-                  </div>
-                </Tree>
-              </div>
-            )}
+                      {tasks.map((task, i) => (
+                        <Task
+                          key={task.id}
+                          task={task}
+                          index={i}
+                          setState={setState}
+                          column={column.id}
+                        />
+                      ))}
+
+                      {placeholder}
+                    </div>
+
+                    <div className='flex flex-row pl-2 mt-2'>
+                      <button
+                        className='border-2 p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                        onClick={() => handleAddTask(column.id, '')}
+                      >
+                        <PlusIcon className='h-4 w-4' />
+                      </button>
+                      <button
+                        className='border-2 p-1 mb-2 rounded-md ml-2 hover:border-rose-500 transition-colors duration-200'
+                        onClick={() => handleDeleteTask(column.id)}
+                      >
+                        <MinusIcon className='h-4 w-4' />
+                      </button>
+                    </div>
+                  </Tree>
+                </div>
+              )
+            }}
           </Droppable>
         </div>
       )}

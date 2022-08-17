@@ -1,7 +1,6 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 import { a, animated, useSpring } from '@react-spring/web'
 
-import { PlusIcon } from '@radix-ui/react-icons'
 import styled from 'styled-components'
 import useMeasure from 'react-use-measure'
 
@@ -34,16 +33,13 @@ export const Tree = ({ isOpen, children }: TreeProps) => {
     },
   })
   return (
-    <div>
-      {/* <PlusIcon onClick={() => setOpen(!isOpen)} /> */}
-      <Content
-        style={{
-          opacity: opacity,
-          height: isOpen && previous === isOpen ? 'auto' : height,
-        }}
-      >
-        <a.div ref={ref}>{children}</a.div>
-      </Content>
-    </div>
+    <Content
+      style={{
+        opacity: opacity,
+        height: isOpen && previous === isOpen ? 'auto' : height,
+      }}
+    >
+      <a.div ref={ref}>{children}</a.div>
+    </Content>
   )
 }

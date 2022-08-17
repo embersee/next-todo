@@ -132,7 +132,7 @@ const Input = ({ state, setState }: InputProps) => {
       ></input>
       <button
         onClick={handleClick}
-        className='inline-block m-2 px-6 py-2.5 bg-blue-600 text-white font-medium text-md leading-tight rounded-md shadow-md hover:bg-blue-700  transition duration-150 ease-in-out'
+        className='inline-block m-2 px-6 py-2 bg-white dark:bg-black font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
       >
         add
       </button>

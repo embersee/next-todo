@@ -13,7 +13,12 @@ export function isTouchEvent(e: Event): e is TouchEvent {
 }
 
 interface PressHandlers<T> {
-  onLongPress: (e: React.MouseEvent<T> | React.TouchEvent<T>) => void
+  onLongPress: (
+    e:
+      | React.MouseEvent<T>
+      | React.TouchEvent<T>
+      | React.ChangeEvent<HTMLInputElement>
+  ) => void
   onClick?: (e: React.MouseEvent<T> | React.TouchEvent<T>) => void
 }
 

@@ -6,6 +6,20 @@ module.exports = {
   ],
   theme: {
     extend: {
+      borderColor: {
+        'night-sky': '#262635',
+        'super-silver': '#efefef',
+      },
+      colors: {
+        'night-sky': '#262635',
+        'super-silver': '#efefef',
+        'black-velvet': '#1E1E2A',
+      },
+      backgroundColor: {
+        'night-sky': '#262635',
+        'super-silver': '#efefef',
+        'black-velvet': '#1E1E2A',
+      },
       willChange: {
         'transform-opacity-height': 'transform, opacity, height',
       },

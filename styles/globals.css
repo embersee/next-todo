@@ -27,8 +27,99 @@ a {
     color-scheme: dark;
   }
   body {
-    color: white;
-    background: black;
+    color: #efefef;
+    background: #16161e;
+  }
+  .styled-checkbox {
+    position: absolute;
+    opacity: 0;
+    padding-left: 3px;
+  }
+  .styled-checkbox + label {
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+  }
+  .styled-checkbox + label:before {
+    content: '';
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 16px;
+    height: 16px;
+    background-color: #262635;
+    border-radius: 0.2rem;
+  }
+  .styled-checkbox:checked + label:before {
+    transition: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+    background: rgb(34 197 94);
+  }
+  .styled-checkbox:disabled + label {
+    color: #b8b8b8;
+    cursor: cursor;
+  }
+  .styled-checkbox:disabled + label:before {
+    box-shadow: none;
+    background: #ddd;
+  }
+  .styled-checkbox:checked + label:after {
+    content: '';
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 1em;
+    height: 1em;
+    background-image: url(../public/assets/tick.svg);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .styled-checkbox {
+    position: absolute;
+    opacity: 0;
+    padding-left: 3px;
+  }
+  .styled-checkbox + label {
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+  }
+  .styled-checkbox + label:before {
+    content: '';
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 16px;
+    height: 16px;
+    background-color: #efefef;
+    border-radius: 0.2rem;
+  }
+  .styled-checkbox:checked + label:before {
+    transition: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+    background: rgb(34 197 94);
+  }
+  .styled-checkbox:disabled + label {
+    color: #b8b8b8;
+    cursor: cursor;
+  }
+  .styled-checkbox:disabled + label:before {
+    box-shadow: none;
+    background: #ddd;
+  }
+  .styled-checkbox:checked + label:after {
+    content: '';
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 1em;
+    height: 1em;
+    background-image: url(../public/assets/tick.svg);
   }
 }
 
@@ -36,46 +127,56 @@ a {
   /* .my-react-select-container {
   } */
   .my-react-select-container .my-react-select__control {
-    @apply w-auto bg-white text-black dark:text-white dark:bg-black border-2 dark:border-white ml-2 select-none;
+    @apply w-auto bg-white text-black dark:text-white dark:bg-black-velvet border-2 dark:border-white ml-2 select-none;
   }
 
   .my-react-select-container .my-react-select__control--is-focused {
-    @apply shadow-none text-black dark:text-white dark:bg-black dark:border-white;
+    @apply shadow-none text-black dark:text-white dark:bg-black-velvet dark:border-white;
   }
 
   .my-react-select__option .my-react-select__option--is-focused,
   .my-react-select__option .my-react-select__option--is-selected {
-    @apply text-md text-black dark:text-white dark:bg-black dark:border-white;
+    @apply text-md text-black dark:text-white dark:bg-night-sky dark:border-white;
   }
 
   .my-react-select-container .my-react-select__menu {
-    @apply w-32 ml-2 bg-white text-black border-2 dark:border-white dark:text-white dark:bg-black shadow-none;
+    @apply w-32 ml-2 bg-white text-black border-2 dark:border-white dark:text-white dark:bg-night-sky shadow-none;
   }
 
   .my-react-select-container .my-react-select__option {
-    @apply bg-white text-black hover:bg-blue-600 dark:text-white dark:bg-black dark:border-white shadow-none;
+    @apply bg-white text-black hover:bg-blue-600 dark:text-white dark:bg-night-sky dark:border-white shadow-none;
   }
 
-  .my-react-select__option
-    .my-react-select__option--is-focused
-    .my-react-select__option--is-selected {
+  .my-react-select__value-container
+    .my-react-select__value-container--has-value {
     @apply bg-rose-500;
   }
 
   .my-react-select-container .my-react-select__placeholder {
-    @apply text-black shadow-none dark:text-white;
+    @apply text-black shadow-none dark:text-white dark:bg-black-velvet;
   }
   /* .my-react-select-container .my-react-select__option--is-focused {
     @apply bg-neutral-200 dark:bg-neutral-800;
   } */
 
   .my-react-select-container .my-react-select__indicator-separator {
-    @apply text-black dark:text-white dark:bg-black;
+    @apply text-black dark:text-white dark:bg-night-sky;
   }
 
   .my-react-select-container .my-react-select__input-container,
   .my-react-select-container .my-react-select__placeholder,
   .my-react-select-container .my-react-select__single-value {
-    @apply dark:text-white dark:bg-black;
+    @apply dark:text-white dark:bg-black-velvet;
   }
 }
+
+/* before tick */
+/* .styled-checkbox:hover + label:before {
+  transition: border-color 0.3s ease;
+  background: rgba(37, 99, 235, 0.3);
+  border: solid 1px;
+  border-color: rgb(96 165 250);
+  border-radius: 0.2rem;
+} */
+
+/* after tick */

@@ -2,10 +2,33 @@ import { Data } from '../../ts/interfaces'
 
 export const data: Data = {
   tasks: {
-    'task-1': { id: 'task-1', content: 'Take out the garbage' },
-    'task-2': { id: 'task-2', content: 'Watch my favorite show' },
-    'task-3': { id: 'task-3', content: 'Charge my phone' },
-    'task-4': { id: 'task-4', content: 'Cook dinner' },
+    'task-1': {
+      id: 'task-1',
+      content: 'Take out the garbage',
+      objectives: [
+        { step: 'get garbage bag', complete: false },
+        { step: 'collect trash', complete: false },
+      ],
+    },
+    'task-2': {
+      id: 'task-2',
+      content: 'Watch my favorite show',
+      objectives: [
+        { step: 'plug in the tv', complete: false },
+        { step: 'find the remote', complete: false },
+        { step: 'intall nexflix', complete: false },
+      ],
+    },
+    'task-3': {
+      id: 'task-3',
+      content: 'Charge my phone',
+      objectives: [],
+    },
+    'task-4': {
+      id: 'task-4',
+      content: 'Cook dinner',
+      objectives: [],
+    },
   },
   columns: {
     'column-1': {

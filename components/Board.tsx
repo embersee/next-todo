@@ -175,7 +175,7 @@ export default function Board() {
                 {state.columnOrder.length < 5 ? (
                   <button
                     onClick={addColumn}
-                    className='border-2 bg-white dark:bg-black p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                    className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
                   >
                     <PlusIcon className='h-4 w-4' />
                   </button>
@@ -184,7 +184,7 @@ export default function Board() {
                 )}
                 <button
                   onClick={deleteColumn}
-                  className='border-2 bg-white dark:bg-black p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                  className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
                 >
                   <MinusIcon className='h-4 w-4' />
                 </button>

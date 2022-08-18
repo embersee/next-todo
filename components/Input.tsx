@@ -60,7 +60,7 @@ const Input = ({ state, setState }: InputProps) => {
         ...prev,
         tasks: {
           ...prev.tasks,
-          [task]: { id: task, content: text },
+          [task]: { id: task, content: text, objectives: [] },
         },
         columns: {
           ...prev.columns,
@@ -107,7 +107,7 @@ const Input = ({ state, setState }: InputProps) => {
 
   return (
     <div
-      className={`border-2 rounded-md dark:bg-black bg-white flex justify-center items-center max-w-screen-md mx-auto mt-2 transition-color ${
+      className={`border-2 rounded-md dark:bg-night-sky bg-white dark:border-super-silver flex justify-center items-center max-w-screen-md mx-auto mt-2 transition-color ${
         error && 'border-rose-500'
       }`}
     >
@@ -128,11 +128,12 @@ const Input = ({ state, setState }: InputProps) => {
         value={text}
         onChange={handleChange}
         placeholder='Add new item...'
-        className=' dark:bg-black flex-auto w-auto text-md pl-4 outline-none '
+        className='dark:bg-night-sky flex-auto w-auto text-md pl-4 outline-none '
       ></input>
       <button
         onClick={handleClick}
-        className='inline-block m-2 px-6 py-2 bg-white dark:bg-black font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+        // onClick={() => console.log(JSON.stringify(state.tasks, undefined, 4))}
+        className='inline-block m-2 px-6 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
       >
         add
       </button>

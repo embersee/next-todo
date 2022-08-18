@@ -1,9 +1,15 @@
 import { Dispatch, SetStateAction } from 'react'
 
+export interface Objectives {
+  step: string
+  complete: boolean
+}
+
 export interface Task {
   map?: any
   id: string
   content: string
+  objectives: Objectives[]
 }
 
 export interface Column {

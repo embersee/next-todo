@@ -1,66 +1,80 @@
-import {
-  Draggable,
-  DraggableProvided,
-  DraggableStateSnapshot,
-  DraggingStyle,
-} from 'react-beautiful-dnd'
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { Draggable, DraggableStateSnapshot } from 'react-beautiful-dnd'
+import { Pencil1Icon, TextAlignCenterIcon } from '@radix-ui/react-icons'
+import { Transition, animated } from '@react-spring/web'
+import { useEffect, useRef, useState } from 'react'
 
 import { TaskProps } from '../ts/interfaces'
+import { Tree } from './utils/Tree'
 import _ from 'lodash'
-import { createPortal } from 'react-dom'
-
-const useDraggableInPortal = () => {
-  const element = useRef<HTMLDivElement>(document.createElement('div')).current
-
-  useEffect(() => {
-    if (element) {
-      element.style.pointerEvents = 'none'
-      element.style.position = 'absolute'
-      element.style.height = '100%'
-      element.style.width = '100%'
-      element.style.top = '0'
-
-      document.body.appendChild(element)
-
-      return () => {
-        document.body.removeChild(element)
-      }
-    }
-  }, [element])
-
-  return (
-      render: (
-        { draggableProps, dragHandleProps, innerRef }: DraggableProvided,
-        snapshot: DraggableStateSnapshot
-      ) => ReactElement
-    ) =>
-    (
-      { draggableProps, dragHandleProps, innerRef }: DraggableProvided,
-      snapshot: DraggableStateSnapshot
-    ) => {
-      const result = render(
-        { draggableProps, dragHandleProps, innerRef },
-        snapshot
-      )
-      const style = draggableProps.style as DraggingStyle
-      if (style.position === 'fixed') {
-        return createPortal(result, element)
-      }
-      return result
-    }
-}
+import useDraggableInPortal from './utils/Portal'
+import useLongPress from './utils/useLongPress'
 
 const Task = ({ task, index, setState, column }: TaskProps) => {
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
+  const [isOpen, setOpen] = useState(false)
+  const [step, setStep] = useState('')
   const [text, setText] = useState('')
+  const [addStep, setAddStep] = useState(false)
+  const [completeObjectives, setCompleteObjectives] = useState<number>()
 
   const renderDraggable = useDraggableInPortal()
 
+  const longPressProps = useLongPress(
+    {
+      onLongPress: (e) => {
+        let target = e.target as HTMLInputElement
+        target.className =
+          'checkbox-custom-label transiton-color select-none text-rose-500'
+        setTimeout(() => {
+          setState((prev) => {
+            return {
+              ...prev,
+              tasks: {
+                ...prev.tasks,
+                [task.id]: {
+                  id: prev.tasks[task.id].id,
+                  content: prev.tasks[task.id].content,
+                  objectives: [
+                    ...prev.tasks[task.id].objectives.filter(
+                      (item) => item.step !== target.id
+                    ),
+                  ],
+                },
+              },
+            }
+          })
+          target.className = 'checkbox-custom-label transiton-color select-none'
+        }, 500)
+      },
+    },
+    {
+      delay: 1000,
+      shouldPreventDefault: true,
+    }
+  )
+
+  useEffect(() => {
+    const countCompleteObjectives = _.filter(
+      task.objectives,
+      (step) => step.complete === true
+    )
+    setCompleteObjectives(countCompleteObjectives.length)
+  }, [task.objectives])
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => {
+    if (textareaRef.current === null) return
+    textareaRef.current.style.height = '0px'
+    const scrollHeight = textareaRef.current.scrollHeight
+    textareaRef.current.style.height = scrollHeight + 'px'
+    textareaRef.current.blur
+  }, [step])
+
+  //set task content
   useEffect(() => {
     if (text === '') return
-    const keyDownHandler = (event: KeyboardEvent) => {
+    const keyDownTaskHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
         setIsFocus(false)
@@ -73,7 +87,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
             ...prev,
             tasks: {
               ...prev.tasks,
-              [task]: { id: task, content: text },
+              [task]: { id: task, content: text, objectives: [] },
             },
             columns: {
               ...prev.columns,
@@ -88,13 +102,74 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
         setText('')
       }
     }
-    document.addEventListener('keydown', keyDownHandler)
+    document.addEventListener('keydown', keyDownTaskHandler)
     return () => {
-      document.removeEventListener('keydown', keyDownHandler)
+      document.removeEventListener('keydown', keyDownTaskHandler)
     }
   })
 
+  //set steps
+  useEffect(() => {
+    if (step === '') return
+
+    if (step) {
+      const keyDownStepHandler = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          setIsFocus(false)
+          setIsBlur(false)
+          setState((prev) => {
+            return {
+              ...prev,
+              tasks: {
+                ...prev.tasks,
+                [task.id]: {
+                  id: prev.tasks[task.id].id,
+                  content: prev.tasks[task.id].content,
+                  objectives: [
+                    ...task.objectives,
+                    { step: step, complete: false },
+                  ],
+                },
+              },
+            }
+          })
+          setStep('')
+        }
+      }
+
+      document.addEventListener('keydown', keyDownStepHandler)
+      return () => {
+        document.removeEventListener('keydown', keyDownStepHandler)
+      }
+    }
+  })
+
+  const updateChecked = (index: number, newCheck: boolean) => {
+    const updatedCheckedItems = [...task.objectives]
+    updatedCheckedItems[index].complete = newCheck
+    setState((prev) => {
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task.id]: {
+            id: prev.tasks[task.id].id,
+            content: prev.tasks[task.id].content,
+            objectives: [...updatedCheckedItems],
+          },
+        },
+      }
+    })
+    const countCompleteObjectives = _.filter(
+      task.objectives,
+      (step) => step.complete === true
+    )
+    setCompleteObjectives(countCompleteObjectives.length)
+  }
+
   const handleChange = (text: string) => setText(text)
+  const handleStep = (step: string) => setStep(step)
   const blurHandler = () => {
     setIsFocus(false)
     setIsBlur(true)
@@ -108,7 +183,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     <Draggable
       draggableId={task.id}
       index={index}
-      isDragDisabled={isFocus || isBlur}
+      isDragDisabled={isFocus || isBlur || isOpen} // || isOpen
+      shouldRespectForcePress={true}
     >
       {renderDraggable(
         (
@@ -117,32 +193,115 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
         ) => (
           <div
             {...draggableProps}
-            {...dragHandleProps}
             ref={innerRef}
-            className={`bg-white dark:bg-black border-2 p-2 rounded-md flex flex-col mt-2 min-h-[43px] transition-colors duration-300  ${
+            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md  mt-2 min-h-[43px] transition-colors duration-300 ${
               isFocus
                 ? 'transition-none border-orange-500 '
                 : isBlur
                 ? 'border-rose-500 '
                 : snapshot.isDragging
                 ? ' border-blue-400 '
-                : 'transition-none hover:border-blue-400'
-            }`}
+                : ' hover:border-blue-400'
+            } `}
           >
-            {task.content !== '' ? (
-              task.content
-            ) : (
-              <input
-                autoFocus
-                type='text'
-                value={text}
-                onChange={(e) => handleChange(e.target.value)}
-                onFocus={focusHandler}
-                onBlur={blurHandler}
-                placeholder='Type your task...'
-                className={`dark:bg-black text-md outline-none w-full`}
-              ></input>
-            )}
+            <div
+              {...dragHandleProps}
+              className='flex flex-row justify-between items-center select-none cursor-pointer'
+            >
+              {task.content ? (
+                <span
+                  onClick={() => {
+                    setOpen((prev) => !prev), setAddStep(false)
+                  }}
+                >
+                  {task.content +
+                    ((task.objectives.length && completeObjectives ? 1 : 0)
+                      ? ` ${completeObjectives}/${task.objectives.length}`
+                      : '')}
+                </span>
+              ) : (
+                <input
+                  autoFocus
+                  type='text'
+                  value={text}
+                  onChange={(e) => handleChange(e.target.value)}
+                  onFocus={focusHandler}
+                  onBlur={blurHandler}
+                  placeholder='Type your task...'
+                  className={`dark:bg-black-velvet h-full text-md outline-none w-full`}
+                ></input>
+              )}
+              {isOpen ? (
+                <Transition
+                  items={isOpen}
+                  from={{ opacity: 0 }}
+                  enter={{ opacity: 1 }}
+                  leave={{ opacity: 0 }}
+                  delay={200}
+                >
+                  {(style) => (
+                    <animated.div style={{ ...style }}>
+                      <Pencil1Icon
+                        className={`h-5 w-5 cursor-pointer`}
+                        onClick={() => {
+                          task.objectives.length
+                            ? setAddStep((prev) => !prev)
+                            : setOpen((prev) => !prev)
+                        }}
+                      />
+                    </animated.div>
+                  )}
+                </Transition>
+              ) : (
+                ''
+              )}
+            </div>
+            <div className='flex flex-col h-auto mx-2'>
+              <Tree isOpen={isOpen}>
+                <div className='pt-1'>
+                  {task.objectives.map((obj, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className='text-sm h-full py-1 flex justify-items-center'
+                      >
+                        <input
+                          id={obj.step}
+                          type='checkbox'
+                          name={obj.step}
+                          checked={obj.complete}
+                          onChange={(e) => updateChecked(i, !obj.complete)}
+                          className='styled-checkbox'
+                        />
+                        <label
+                          {...longPressProps}
+                          id={obj.step}
+                          className='checkbox-custom-label select-none transiton-color'
+                          htmlFor={obj.step}
+                        >
+                          {obj.step}
+                        </label>
+                      </div>
+                    )
+                  })}
+                  {!(task.objectives.length > 0) || addStep ? (
+                    <textarea
+                      ref={textareaRef}
+                      value={step}
+                      onChange={(e) => handleStep(e.target.value)}
+                      // onFocus={focusHandler}
+                      // onBlur={blurHandler}
+                      placeholder='add step...'
+                      className={`bg-super-silver dark:bg-night-sky h-[28px] p-1 ml-[22px] text-sm outline-none w-[90%] overflow-x-hidden resize-none rounded-md`}
+                      autoComplete='on'
+                      spellCheck='false'
+                    />
+                  ) : (
+                    ''
+                  )}
+                </div>
+              </Tree>
+            </div>
           </div>
         )
       )}

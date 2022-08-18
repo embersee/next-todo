@@ -1,18 +1,17 @@
 import { ChevronDownIcon, MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
+import _, { includes } from 'lodash'
 import { useEffect, useState } from 'react'
 
 import { ColumnProps } from '../ts/interfaces'
 import Task from './Task'
-import { Tree } from './Tree'
-import _ from 'lodash'
+import { Tree } from './utils/Tree'
 
 const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   const [title, setTitle] = useState('')
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
   const [isOpen, setOpen] = useState(true)
-  const [isDraggingOver, setIsDraggingOver] = useState(false)
 
   useEffect(() => {
     if (title === '') return
@@ -80,7 +79,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         ...prev,
         tasks: {
           ...prev.tasks,
-          [task]: { id: task, content: text },
+          [task]: { id: task, content: text, objectives: [] },
         },
         columns: {
           ...prev.columns,
@@ -106,8 +105,18 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         return {
           ...prev,
         }
+
+      const newTasks = prev.columns[column].taskIds.slice(0, -1)
+      const filteredTasks = _.filter(prev.tasks, (task) =>
+        newTasks.includes(task.id)
+      )
+
+      const tasksObject = _.zipObject(newTasks, filteredTasks)
+      console.log(JSON.stringify(tasksObject, undefined, 4))
+
       return {
         ...prev,
+        tasks: tasksObject,
         columns: {
           ...prev.columns,
           [column]: {
@@ -139,16 +148,18 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         <div
           {...draggableProps}
           ref={innerRef}
-          className={`w-full border-2 bg-white dark:bg-black dark:border-whiteborder-black rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit transition-colors duration-700 ${
-            isDragging ? 'border-blue-600' : 'border-inherit'
-          } ${isDraggingOver ? 'border-blue-600' : 'border-inherit'}`}
+          className={`w-full border-2 bg-white dark:bg-night-sky border-night-sky/50 dark:border-super-silver rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit transition-colors duration-700 ${
+            isDragging
+              ? 'border-blue-600 dark:border-blue-600'
+              : 'border-inherit'
+          }`}
         >
           <div
             {...dragHandleProps}
             className='p-2 box-border flex flex-row justify-start items-center '
           >
             <ChevronDownIcon
-              className={`h-6 w-6 shrink-0 cursor-pointer transition-transform ${
+              className={`h-6 w-6 shrink-0 cursor-pointer transition-transform duration-300 ${
                 isOpen && 'rotate-180'
               }`}
               onClick={() => setOpen(!isOpen)}
@@ -157,7 +168,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
               <input
                 autoFocus
                 type='text'
-                className={`dark:bg-black text-2xl font-bold w-full outline-none pl-1 transition-colors duration-300  ${
+                className={`dark:bg-night-sky text-2xl font-bold w-full outline-none pl-1 transition-colors duration-300  ${
                   isFocus
                     ? 'border-2 rounded-md border-orange-500'
                     : isBlur
@@ -171,7 +182,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                 placeholder='Type column name...'
               />
             ) : (
-              <h1 className='text-2xl ml-1 font-bold flex justify-center border-2 border-white dark:border-black'>
+              <h1 className='text-2xl ml-1 font-bold flex justify-center border-2 border-white dark:border-night-sky dark:bg-night-sky'>
                 {column.title}
               </h1>
             )}
@@ -184,47 +195,44 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
             {(
               { droppableProps, innerRef, placeholder },
               { isDraggingOver }
-            ) => {
-              setIsDraggingOver(isDraggingOver)
-              return (
-                <div className='container flex flex-col justify-end h-fit'>
-                  <Tree isOpen={isOpen}>
-                    <div
-                      ref={innerRef}
-                      {...droppableProps}
-                      className={`flex flex-col flex-grow px-2 pb-2 min-h-400 transition-colors duration-300`}
+            ) => (
+              <div className='container flex flex-col justify-end h-fit'>
+                <Tree isOpen={isOpen}>
+                  <div
+                    ref={innerRef}
+                    {...droppableProps}
+                    className={`flex flex-col flex-grow px-2 pb-2 min-h-400 transition-colors duration-300`}
+                  >
+                    {tasks.map((task, i) => (
+                      <Task
+                        key={task.id}
+                        task={task}
+                        index={i}
+                        setState={setState}
+                        column={column.id}
+                      />
+                    ))}
+
+                    {placeholder}
+                  </div>
+
+                  <div className='flex flex-row pl-2 mt-2'>
+                    <button
+                      className='border-2 dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                      onClick={() => handleAddTask(column.id, '')}
                     >
-                      {tasks.map((task, i) => (
-                        <Task
-                          key={task.id}
-                          task={task}
-                          index={i}
-                          setState={setState}
-                          column={column.id}
-                        />
-                      ))}
-
-                      {placeholder}
-                    </div>
-
-                    <div className='flex flex-row pl-2 mt-2'>
-                      <button
-                        className='border-2 p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
-                        onClick={() => handleAddTask(column.id, '')}
-                      >
-                        <PlusIcon className='h-4 w-4' />
-                      </button>
-                      <button
-                        className='border-2 p-1 mb-2 rounded-md ml-2 hover:border-rose-500 transition-colors duration-200'
-                        onClick={() => handleDeleteTask(column.id)}
-                      >
-                        <MinusIcon className='h-4 w-4' />
-                      </button>
-                    </div>
-                  </Tree>
-                </div>
-              )
-            }}
+                      <PlusIcon className='h-4 w-4' />
+                    </button>
+                    <button
+                      className='border-2 dark:bg-black-velvet  dark:border-super-silver p-1 mb-2 rounded-md ml-2 hover:border-rose-500 transition-colors duration-200'
+                      onClick={() => handleDeleteTask(column.id)}
+                    >
+                      <MinusIcon className='h-4 w-4' />
+                    </button>
+                  </div>
+                </Tree>
+              </div>
+            )}
           </Droppable>
         </div>
       )}

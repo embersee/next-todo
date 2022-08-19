@@ -6,6 +6,7 @@ import Column from './Column'
 import Input from './Input'
 import _ from 'lodash'
 import { data } from '../pages/api/data'
+import { json } from 'stream/consumers'
 
 export default function Board() {
   const [state, setState] = useState(data)
@@ -122,25 +123,38 @@ export default function Board() {
 
   const deleteColumn = () => {
     setState((prev) => {
+      const columnIndex = prev.columnOrder.length
+      const column = `column-${columnIndex}`
+
       const filterEmptyColumns = _.filter(
         prev.columns,
         (column) => column.title === ''
       )
 
-      if (filterEmptyColumns.length > 0)
+      if (filterEmptyColumns.length > 1) {
         return {
           ...prev,
         }
+      }
+      //TODO: remove tasks that are stored in the soon to be deleted column
+
+      //get tasks that are inside last column
+      const tasksInLastColumn = _.valuesIn(prev.columns[column].taskIds)
+
+      //delete selected tasks (from last column) from the tasks object (state.tasks)
+
+      const newTasks = _.omitBy(prev.tasks, (task) =>
+        tasksInLastColumn.includes(task.id)
+      )
+
+      const newColumns = Object.fromEntries(
+        Object.entries(prev.columns).slice(0, -1)
+      )
+
       return {
         ...prev,
-        columns: {
-          ...prev.columns,
-          [prev.columnOrder[prev.columnOrder.length - 1]]: {
-            id: '',
-            title: '',
-            taskIds: [],
-          },
-        },
+        tasks: newTasks,
+        columns: newColumns,
         columnOrder: [...prev.columnOrder.slice(0, -1)],
       }
     })
@@ -182,12 +196,16 @@ export default function Board() {
                 ) : (
                   ''
                 )}
-                <button
-                  onClick={deleteColumn}
-                  className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
-                >
-                  <MinusIcon className='h-4 w-4' />
-                </button>
+                {state.columnOrder.length > 0 ? (
+                  <button
+                    onClick={deleteColumn}
+                    className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                  >
+                    <MinusIcon className='h-4 w-4' />
+                  </button>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
           )}

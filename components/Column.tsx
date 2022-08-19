@@ -15,9 +15,11 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
 
   useEffect(() => {
     if (title === '') return
+    console.log(1)
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
+        console.log(2)
         handleAddColumn()
         setTitle('')
       }
@@ -35,13 +37,13 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
       const columnIndex = prev.columnOrder.length
       const newColumn = `column-${columnIndex}`
 
-      //check if there already is a existing new empty task
+      //check if there already is a existing new empty column, return nothing if there is more than 1 already existing column
       const filterEmptyColumns = _.filter(
         prev.columns,
         (column) => column.title === ''
       )
 
-      if (filterEmptyColumns.length > 0)
+      if (filterEmptyColumns.length > 1)
         return {
           ...prev,
         }
@@ -95,7 +97,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
 
   const handleDeleteTask = (column: string) => {
     setState((prev) => {
-      //check if there already is a existing new empty task
+      //check if there already is a existing empty task else return
       const filterEmptyTasks = _.filter(
         prev.tasks,
         (task) => task.content === ''
@@ -106,25 +108,42 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
           ...prev,
         }
 
-      const newTasks = prev.columns[column].taskIds.slice(0, -1)
-      const filteredTasks = _.filter(prev.tasks, (task) =>
-        newTasks.includes(task.id)
+      //get rid of last task in selected column( delete it)
+      const newTaskIds = [...prev.columns[column].taskIds.slice(0, -1)]
+
+      const newColumns = {
+        ...prev.columns,
+        [column]: {
+          id: column,
+          title: prev.columns[column].title,
+          taskIds: newTaskIds,
+        },
+      }
+
+      //get all tasks inside [column-name].taskIds and combine into single array
+      const combinedArray: string[] = []
+      Object.keys(prev.columns).forEach((key) => {
+        combinedArray.push(...newColumns[key].taskIds)
+      })
+      //a collator allows for sorting an array of strings with number values inside, so here its 'column-1, column-2' etc, so i sort it in ascending numeric value
+      var collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      })
+
+      combinedArray.sort(collator.compare) //sort array with collator
+
+      const filteredTasksInColumn = _.filter(prev.tasks, (task) =>
+        combinedArray.includes(task.id)
       )
 
-      const tasksObject = _.zipObject(newTasks, filteredTasks)
-      console.log(JSON.stringify(tasksObject, undefined, 4))
+      //create new tasks object using the array of task names and their respected properties
+      const tasksObject = _.zipObject(combinedArray, filteredTasksInColumn)
 
       return {
         ...prev,
         tasks: tasksObject,
-        columns: {
-          ...prev.columns,
-          [column]: {
-            id: column,
-            title: prev.columns[column].title,
-            taskIds: [...prev.columns[column].taskIds.slice(0, -1)],
-          },
-        },
+        columns: newColumns,
       }
     })
   }

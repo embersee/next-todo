@@ -1,8 +1,8 @@
 import { Draggable, DraggableStateSnapshot } from 'react-beautiful-dnd'
-import { Pencil1Icon, TextAlignCenterIcon } from '@radix-ui/react-icons'
 import { Transition, animated } from '@react-spring/web'
 import { useEffect, useRef, useState } from 'react'
 
+import { Pencil1Icon } from '@radix-ui/react-icons'
 import { TaskProps } from '../ts/interfaces'
 import { Tree } from './utils/Tree'
 import _ from 'lodash'
@@ -20,6 +20,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
 
   const renderDraggable = useDraggableInPortal()
 
+  //using longPress on a step of a task to delete it!
   const longPressProps = useLongPress(
     {
       onLongPress: (e) => {
@@ -54,6 +55,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     }
   )
 
+  //update title of task to step completion value
   useEffect(() => {
     const countCompleteObjectives = _.filter(
       task.objectives,
@@ -63,6 +65,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
   }, [task.objectives])
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  //expand textarea element depending on user input / length of the text
   useEffect(() => {
     if (textareaRef.current === null) return
     textareaRef.current.style.height = '0px'
@@ -77,28 +80,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     const keyDownTaskHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
-        setIsFocus(false)
-        setIsBlur(false)
-        setState((prev) => {
-          const index = _.size(prev.tasks)
-          const task = `task-${index}`
-
-          return {
-            ...prev,
-            tasks: {
-              ...prev.tasks,
-              [task]: { id: task, content: text, objectives: [] },
-            },
-            columns: {
-              ...prev.columns,
-              [column]: {
-                id: column,
-                title: prev.columns[column].title,
-                taskIds: [...prev.columns[column].taskIds.slice(0, -1), task],
-              },
-            },
-          }
-        })
+        setTaskTitle()
         setText('')
       }
     }
@@ -108,6 +90,30 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     }
   })
 
+  const setTaskTitle = () => {
+    setIsFocus(false)
+    setIsBlur(false)
+    setState((prev) => {
+      const index = _.size(prev.tasks)
+      const task = `task-${index}`
+
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task]: { id: task, content: text, objectives: [] },
+        },
+        columns: {
+          ...prev.columns,
+          [column]: {
+            id: column,
+            title: prev.columns[column].title,
+            taskIds: [...prev.columns[column].taskIds.slice(0, -1), task],
+          },
+        },
+      }
+    })
+  }
   //set steps
   useEffect(() => {
     if (step === '') return
@@ -116,24 +122,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
       const keyDownStepHandler = (event: KeyboardEvent) => {
         if (event.key === 'Enter') {
           event.preventDefault()
-          setIsFocus(false)
-          setIsBlur(false)
-          setState((prev) => {
-            return {
-              ...prev,
-              tasks: {
-                ...prev.tasks,
-                [task.id]: {
-                  id: prev.tasks[task.id].id,
-                  content: prev.tasks[task.id].content,
-                  objectives: [
-                    ...task.objectives,
-                    { step: step, complete: false },
-                  ],
-                },
-              },
-            }
-          })
+          setStepsName()
           setStep('')
         }
       }
@@ -144,6 +133,24 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
       }
     }
   })
+
+  const setStepsName = () => {
+    setIsFocus(false)
+    setIsBlur(false)
+    setState((prev) => {
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task.id]: {
+            id: prev.tasks[task.id].id,
+            content: prev.tasks[task.id].content,
+            objectives: [...task.objectives, { step: step, complete: false }],
+          },
+        },
+      }
+    })
+  }
 
   const updateChecked = (index: number, newCheck: boolean) => {
     const updatedCheckedItems = [...task.objectives]
@@ -194,7 +201,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           <div
             {...draggableProps}
             ref={innerRef}
-            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md  mt-2 min-h-[43px] transition-colors duration-300 ${
+            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mt-2 h-auto min-h-[43px] transition-colors duration-300 ${
               isFocus
                 ? 'transition-none border-orange-500 '
                 : isBlur
@@ -206,18 +213,25 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           >
             <div
               {...dragHandleProps}
-              className='flex flex-row justify-between items-center select-none cursor-pointer'
+              className='flex flex-row justify-between items-center select-none cursor-pointer h-auto'
             >
               {task.content ? (
                 <span
                   onClick={() => {
-                    setOpen((prev) => !prev), setAddStep(false)
+                    setOpen((prev) => !prev),
+                      setAddStep(!(task.objectives.length > 0) ? true : false)
                   }}
                 >
-                  {task.content +
-                    ((task.objectives.length && completeObjectives ? 1 : 0)
-                      ? ` ${completeObjectives}/${task.objectives.length}`
-                      : '')}
+                  {task.content}{' '}
+                  <span
+                    className={`${
+                      (task.objectives.length && completeObjectives ? 1 : 0)
+                        ? `opacity-100`
+                        : 'opacity-0'
+                    }`}
+                  >
+                    {completeObjectives}/{task.objectives.length}
+                  </span>
                 </span>
               ) : (
                 <input
@@ -284,7 +298,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
                       </div>
                     )
                   })}
-                  {!(task.objectives.length > 0) || addStep ? (
+
+                  <Tree isOpen={addStep}>
                     <textarea
                       ref={textareaRef}
                       value={step}
@@ -296,9 +311,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
                       autoComplete='on'
                       spellCheck='false'
                     />
-                  ) : (
-                    ''
-                  )}
+                  </Tree>
                 </div>
               </Tree>
             </div>

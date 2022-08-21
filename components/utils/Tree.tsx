@@ -20,21 +20,24 @@ type TreeProps = WithChildren<{
 export const Tree = ({ isOpen, children }: TreeProps) => {
   const previous = usePrevious(isOpen)
   const [ref, { height: viewHeight }] = useMeasure()
-  const { height, opacity } = useSpring({
-    from: { height: 0, opacity: 0 },
+  const { height, opacity, y } = useSpring({
+    from: { height: 0, opacity: 0, y: 0 },
     to: {
       height: isOpen ? viewHeight : 0,
       opacity: isOpen ? 1 : 0,
+      y: isOpen ? 0 : 20,
     },
   })
   return (
     <Content
       style={{
         opacity: opacity,
-        height: isOpen && previous === isOpen ? 'auto' : height,
+        height: isOpen && previous === isOpen ? '100%' : height,
       }}
     >
-      <a.div ref={ref}>{children}</a.div>
+      <a.div ref={ref} style={{ y }}>
+        {children}
+      </a.div>
     </Content>
   )
 }

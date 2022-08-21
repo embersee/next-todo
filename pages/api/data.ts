@@ -6,7 +6,7 @@ export const data: Data = {
       id: 'task-1',
       content: 'Take out the garbage',
       objectives: [
-        { step: 'get garbage bag', complete: false },
+        { step: 'get garbage bag', complete: true },
         { step: 'collect trash', complete: false },
       ],
     },
@@ -14,8 +14,8 @@ export const data: Data = {
       id: 'task-2',
       content: 'Watch my favorite show',
       objectives: [
-        { step: 'plug in the tv', complete: false },
-        { step: 'find the remote', complete: false },
+        { step: 'plug in the tv', complete: true },
+        { step: 'find the remote', complete: true },
         { step: 'intall nexflix', complete: false },
       ],
     },

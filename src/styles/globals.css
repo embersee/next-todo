@@ -72,7 +72,7 @@ a {
     top: 2px;
     width: 1em;
     height: 1em;
-    background-image: url(../public/assets/tick.svg);
+    background-image: url(../../public/assets/tick.svg);
   }
 }
 
@@ -119,7 +119,7 @@ a {
     top: 2px;
     width: 1em;
     height: 1em;
-    background-image: url(../public/assets/tick.svg);
+    background-image: url(../../public/assets/tick.svg);
   }
 }
 

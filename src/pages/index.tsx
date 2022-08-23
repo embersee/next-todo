@@ -1,16 +1,8 @@
-import { useEffect, useState } from 'react'
-
-import Board from '../components/Board'
 import Head from 'next/head'
+import Link from 'next/link'
 import type { NextPage } from 'next'
 
 const Home: NextPage = () => {
-  const [isBrowser, setIsBrowser] = useState(false)
-
-  useEffect(() => {
-    setIsBrowser(process.browser)
-  }, [])
-
   return (
     <div className='h-screen w-screen'>
       <Head>
@@ -20,7 +12,14 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main className='container mx-auto'>{isBrowser ? <Board /> : null}</main>
+      <main className='flex items-center justify-evenly h-screen w-full '>
+        <Link href='/sign-up' className='link'>
+          Sign up
+        </Link>
+        <Link href='/sign-in' className='link'>
+          Sign in
+        </Link>
+      </main>
 
       <footer className=''></footer>
     </div>

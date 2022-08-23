@@ -1,15 +1,23 @@
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
 import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Column from './Column'
+import { Data } from '../ts/interfaces'
 import Input from './Input'
 import _ from 'lodash'
-import { data } from '../pages/api/data'
-import { json } from 'stream/consumers'
+import { trpc } from '../utils/trpc'
 
-export default function Board() {
-  const [state, setState] = useState(data)
+export default function Board({ data }: any) {
+  const [state, setState] = useState<Data>(data)
+  const [show, setShow] = useState(false)
+  const { mutate, error } = trpc.useMutation(['users.change'], {
+    onSuccess: () => {},
+  })
+
+  useEffect(() => {
+    mutate(state)
+  }, [mutate, state])
 
   const onDragEnd = (res: DropResult) => {
     const { destination, source, draggableId, type } = res
@@ -136,13 +144,10 @@ export default function Board() {
           ...prev,
         }
       }
-      //TODO: remove tasks that are stored in the soon to be deleted column
-
       //get tasks that are inside last column
       const tasksInLastColumn = _.valuesIn(prev.columns[column].taskIds)
 
       //delete selected tasks (from last column) from the tasks object (state.tasks)
-
       const newTasks = _.omitBy(prev.tasks, (task) =>
         tasksInLastColumn.includes(task.id)
       )
@@ -159,9 +164,26 @@ export default function Board() {
       }
     })
   }
+
+  const handleComboKey = useCallback((e: { key: any }) => {
+    if (e.key == 'Meta') {
+      setShow((prev) => !prev)
+    }
+  }, [])
+
+  useEffect(() => {
+    // attach the event listener
+    document.addEventListener('keydown', handleComboKey)
+
+    // remove the event listener
+    return () => {
+      document.removeEventListener('keydown', handleComboKey)
+    }
+  }, [handleComboKey])
+
   return (
     <>
-      <Input state={state} setState={setState} />
+      <Input state={state} setState={setState} show={show} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
           {({ droppableProps, innerRef, placeholder }) => (

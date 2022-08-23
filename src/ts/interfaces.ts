@@ -42,4 +42,5 @@ export interface Data {
 export interface InputProps {
   state: Data
   setState: Dispatch<SetStateAction<Data>>
+  show: boolean
 }

@@ -9,7 +9,7 @@ interface SelectValue {
   label: string
 }
 
-const Input = ({ state, setState }: InputProps) => {
+const Input = ({ state, setState, show }: InputProps) => {
   const [text, setText] = useState('')
   const [optionsArray, setOptionsArray] = useState([
     { value: 'column-1', label: 'To do' },
@@ -19,6 +19,7 @@ const Input = ({ state, setState }: InputProps) => {
   const [error, setError] = useState(false)
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectedColumn, setSelectedColumn] = useState(state.columnOrder[0])
+
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setText(e.currentTarget.value)
   }
@@ -106,6 +107,8 @@ const Input = ({ state, setState }: InputProps) => {
   }
 
   const isDisabled = _.isEmpty(state.columns)
+
+  if (!show) return null
 
   return (
     <div

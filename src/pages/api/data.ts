@@ -47,6 +47,5 @@ export const data: Data = {
       taskIds: [],
     },
   },
-  // Facilitate reordering of the columns
   columnOrder: ['column-1', 'column-2', 'column-3'],
 }

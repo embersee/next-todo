@@ -1,5 +1,4 @@
 import { Draggable, DraggableStateSnapshot } from 'react-beautiful-dnd'
-import { Transition, animated } from '@react-spring/web'
 import { useEffect, useRef, useState } from 'react'
 
 import { Pencil1Icon } from '@radix-ui/react-icons'
@@ -213,13 +212,13 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           >
             <div
               {...dragHandleProps}
-              className='flex flex-row justify-between items-center select-none cursor-pointer h-auto'
+              className='flex flex-row justify-between items-center select-none cursor-pointer h-auto leading-normal'
             >
               {task.content ? (
                 <span
                   onClick={() => {
-                    setOpen((prev) => !prev),
-                      setAddStep(!(task.objectives.length > 0) ? true : false)
+                    setAddStep(!(task.objectives.length > 0) ? true : false),
+                      setOpen((prev) => !prev)
                   }}
                 >
                   {task.content}{' '}
@@ -245,74 +244,62 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
                   className={`dark:bg-black-velvet h-full text-md outline-none w-full`}
                 ></input>
               )}
-              {isOpen ? (
-                <Transition
-                  items={isOpen}
-                  from={{ opacity: 0 }}
-                  enter={{ opacity: 1 }}
-                  leave={{ opacity: 0 }}
-                  delay={200}
-                >
-                  {(style) => (
-                    <animated.div style={{ ...style }}>
-                      <Pencil1Icon
-                        className={`h-5 w-5 cursor-pointer`}
-                        onClick={() => {
-                          task.objectives.length
-                            ? setAddStep((prev) => !prev)
-                            : setOpen((prev) => !prev)
-                        }}
-                      />
-                    </animated.div>
-                  )}
-                </Transition>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className='flex flex-col h-auto mx-2'>
-              <Tree isOpen={isOpen}>
-                <div className='pt-1'>
-                  {task.objectives.map((obj, i) => {
-                    return (
-                      <div
-                        key={i}
-                        className='text-sm h-full py-1 flex justify-items-center'
-                      >
-                        <input
-                          id={obj.step}
-                          type='checkbox'
-                          name={obj.step}
-                          checked={obj.complete}
-                          onChange={(e) => updateChecked(i, !obj.complete)}
-                          className='styled-checkbox'
-                        />
-                        <label
-                          {...longPressProps}
-                          id={obj.step}
-                          className='checkbox-custom-label select-none transiton-color'
-                          htmlFor={obj.step}
-                        >
-                          {obj.step}
-                        </label>
-                      </div>
-                    )
-                  })}
 
-                  <Tree isOpen={addStep}>
-                    <textarea
-                      ref={textareaRef}
-                      value={step}
-                      onChange={(e) => handleStep(e.target.value)}
-                      // onFocus={focusHandler}
-                      // onBlur={blurHandler}
-                      placeholder='add step...'
-                      className={`bg-super-silver dark:bg-night-sky h-[28px] p-1 ml-[22px] text-sm outline-none w-[90%] overflow-x-hidden resize-none rounded-md`}
-                      autoComplete='on'
-                      spellCheck='false'
-                    />
-                  </Tree>
-                </div>
+              <Pencil1Icon
+                className={`h-5 w-5 cursor-pointer transition-opacity ${
+                  isOpen ? 'opacity-100' : 'opacity-0'
+                }`}
+                onClick={() => {
+                  task.objectives.length
+                    ? setAddStep((prev) => !prev)
+                    : setOpen((prev) => !prev)
+                }}
+              />
+            </div>
+            <div className='flex flex-col h-full mx-2 mt-1'>
+              <Tree isOpen={isOpen}>
+                {task.objectives.map((obj, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className='text-sm h-full py-1 flex justify-items-center'
+                    >
+                      <input
+                        id={obj.step}
+                        type='checkbox'
+                        name={obj.step}
+                        checked={obj.complete}
+                        onChange={(e) => updateChecked(i, !obj.complete)}
+                        className='styled-checkbox'
+                        tabIndex={-1}
+                      />
+                      <label
+                        {...longPressProps}
+                        id={obj.step}
+                        className='checkbox-custom-label select-none transiton-color'
+                        htmlFor={obj.step}
+                        tabIndex={-1}
+                      >
+                        {obj.step}
+                      </label>
+                    </div>
+                  )
+                })}
+
+                <Tree isOpen={addStep}>
+                  <textarea
+                    tabIndex={-1}
+                    ref={textareaRef}
+                    value={step}
+                    onChange={(e) => handleStep(e.target.value)}
+                    // onFocus={focusHandler}
+                    // onBlur={blurHandler}
+                    placeholder='add step...'
+                    className={`bg-super-silver dark:bg-night-sky h-[28px] p-1 ml-[22px] text-sm outline-none w-[90%] overflow-x-hidden resize-none rounded-md`}
+                    autoComplete='on'
+                    spellCheck='false'
+                  />
+                </Tree>
               </Tree>
             </div>
           </div>

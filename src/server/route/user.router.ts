@@ -147,12 +147,13 @@ export const userRouter = createRouter()
   .mutation('change', {
     input: DataSchema,
     resolve: async ({ ctx, input }) => {
+      const { state, columnTitle } = input
       const result = await ctx.prisma.board.update({
         where: {
-          title: input.columnTitle.toString(),
+          title: columnTitle,
         },
         data: {
-          data: input.state,
+          data: state,
         },
       })
 

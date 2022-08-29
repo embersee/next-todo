@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { createRouter } from '../createRouter'
 import { hash } from 'argon2'
 import { signUpSchema } from '../../schema/user.schema'
+import { z } from 'zod'
 
 const data = {
   tasks: {
@@ -80,6 +81,14 @@ export const userRouter = createRouter()
         data: { username, email, password: hashedPassword },
       })
 
+      const createBoard = await ctx.prisma.board.create({
+        data: {
+          title: `${result.username}'s Board`,
+          authorId: result.id,
+          data: data,
+        },
+      })
+
       return {
         status: 201,
         message: 'Account created successfully',
@@ -94,66 +103,56 @@ export const userRouter = createRouter()
           code: 'NOT_FOUND',
           message: 'User doesnt exist',
         })
-      const me = await ctx.prisma.user.findFirst({
+      const me = await ctx.prisma.user.findUnique({
         where: {
           email: ctx.session.user.email,
         },
-      })
-
-      const board = await ctx.prisma.board.findFirst({
-        where: {
-          authorId: me?.id,
+        include: {
+          boards: true,
         },
       })
 
-      if (board === null) {
+      if (!me) return
+      if (me?.boards.length < 1) {
         const createData = await ctx.prisma.board.create({
           data: {
-            title: `${me?.username}'s Board`,
+            title: `${
+              me?.username.charAt(0).toUpperCase() + me?.username.slice(1)
+            }'s Board`,
             authorId: me?.id,
             data: data,
           },
         })
-
+        const me2 = await ctx.prisma.user.findUnique({
+          where: {
+            email: ctx.session.user.email,
+          },
+          include: {
+            boards: true,
+          },
+        })
         return {
           status: 201,
-          message: 'New user GET request successfully',
-          result: createData,
+          message: 'User GET request successfully',
+          result: me2,
         }
       }
       return {
         status: 201,
         message: 'User GET request successfully',
-        result: board,
+        result: me,
       }
     },
   })
   .mutation('change', {
     input: DataSchema,
     resolve: async ({ ctx, input }) => {
-      if (!ctx.session?.user?.email)
-        throw new trpc.TRPCError({
-          code: 'NOT_FOUND',
-          message: 'User doesnt exist',
-        })
-
-      const newData = input
-      // console.log(JSON.stringify(newData, undefined, 4))
-
-      const me = await ctx.prisma.user.findFirst({
+      const result = await ctx.prisma.board.update({
         where: {
-          email: ctx.session.user.email,
-        },
-      })
-
-      if (!me?.id) return
-
-      const result = await ctx.prisma.board.updateMany({
-        where: {
-          authorId: me.id,
+          title: input.columnTitle,
         },
         data: {
-          data: newData,
+          data: input.state,
         },
       })
 

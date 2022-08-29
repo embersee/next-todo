@@ -25,7 +25,7 @@ export default withTRPC<AppRouter>({
     const links = [
       loggerLink(),
       httpBatchLink({
-        maxBatchSize: 10,
+        maxBatchSize: 2,
         url,
       }),
     ]

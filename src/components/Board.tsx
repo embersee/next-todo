@@ -8,7 +8,7 @@ import Input from './Input'
 import _ from 'lodash'
 import { trpc } from '../utils/trpc'
 
-export default function Board({ data }: any) {
+const Board = ({ data, title }: { data: any; title: string }) => {
   const [state, setState] = useState<Data>(data)
   const [show, setShow] = useState(false)
   const { mutate, error } = trpc.useMutation(['users.change'], {
@@ -16,8 +16,8 @@ export default function Board({ data }: any) {
   })
 
   useEffect(() => {
-    mutate(state)
-  }, [mutate, state])
+    mutate({ columnTitle: title, state: state })
+  }, [mutate, title, state])
 
   const onDragEnd = (res: DropResult) => {
     const { destination, source, draggableId, type } = res
@@ -100,9 +100,11 @@ export default function Board({ data }: any) {
 
   const addColumn = () => {
     setState((prev) => {
-      const columnIndex = prev.columnOrder.length
-      const newColumn = `column-${columnIndex + 1}`
-
+      const newColumn =
+        prev.columnOrder.length > 0
+          ? prev.columnOrder.slice(-1)[0].slice(0, -1) +
+            (Number(prev.columnOrder.slice(-1)[0].slice(-1)[0]) + 1)
+          : 'column-1'
       const filterEmptyColumns = _.filter(
         prev.columns,
         (column) => column.title === ''
@@ -131,8 +133,7 @@ export default function Board({ data }: any) {
 
   const deleteColumn = () => {
     setState((prev) => {
-      const columnIndex = prev.columnOrder.length
-      const column = `column-${columnIndex}`
+      const column = prev.columnOrder.slice(-1)[0]
 
       const filterEmptyColumns = _.filter(
         prev.columns,
@@ -152,9 +153,10 @@ export default function Board({ data }: any) {
         tasksInLastColumn.includes(task.id)
       )
 
-      const newColumns = Object.fromEntries(
-        Object.entries(prev.columns).slice(0, -1)
-      )
+      //delete column from Column Object, (the last column in columnOrder)
+      const newColumns = _.pick(prev.columns, [
+        ...prev.columnOrder.slice(0, -1),
+      ])
 
       return {
         ...prev,
@@ -182,7 +184,7 @@ export default function Board({ data }: any) {
   }, [handleComboKey])
 
   return (
-    <>
+    <div>
       <Input state={state} setState={setState} show={show} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
@@ -190,7 +192,7 @@ export default function Board({ data }: any) {
             <div
               {...droppableProps}
               ref={innerRef}
-              className=' h-fit w-full container flex justify-center'
+              className=' h-full w-full flex justify-center'
             >
               {state.columnOrder.map((id, i) => {
                 const col = state.columns[id]
@@ -221,7 +223,7 @@ export default function Board({ data }: any) {
                 {state.columnOrder.length > 0 ? (
                   <button
                     onClick={deleteColumn}
-                    className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                    className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-rose-500 transition-colors duration-200'
                   >
                     <MinusIcon className='h-4 w-4' />
                   </button>
@@ -233,6 +235,8 @@ export default function Board({ data }: any) {
           )}
         </Droppable>
       </DragDropContext>
-    </>
+    </div>
   )
 }
+
+export default Board

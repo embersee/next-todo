@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 const SignIn: NextPage = () => {
   const { register, handleSubmit } = useForm<SignIn>({
@@ -25,37 +26,45 @@ const SignIn: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main>
+      <main className='flex flex-col items-center justify-center h-screen w-full'>
         <form
-          className='flex items-center justify-center h-screen w-full'
+          className='flex items-center justify-center'
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className='card w-96 bg-base-100 shadow-xl'>
-            <div className='card-body'>
-              <h2 className='card-title'>Welcome back!</h2>
+          <div className=' w-96 bg-base-100 shadow-xl border-2 rounded-md p-4'>
+            <div>
+              <h1 className='text-xl'>Welcome back!</h1>
               <input
+                autoComplete='off'
                 type='text'
                 placeholder='Type your username...'
-                className='input input-bordered w-full max-w-xs mt-2 bg-black-velvet'
+                className='h-8 rounded-md pl-2 w-full max-w-xs my-2 dark:bg-black-velvet '
                 {...register('username')}
               />
               <input
+                autoComplete='off'
                 type='password'
                 placeholder='Type your password...'
-                className='input input-bordered w-full max-w-xs my-2 bg-black-velvet'
+                className='h-8 rounded-md pl-2 w-full max-w-xs my-2 dark:bg-black-velvet '
                 {...register('password')}
               />
               <div className='flex justify-between'>
-                <Link href='/sign-up' className='link'>
-                  Go to sign up
-                </Link>
-                <button className='' type='submit'>
+                <button
+                  type='submit'
+                  className='inline-block mt-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                >
                   Login
                 </button>
               </div>
             </div>
           </div>
         </form>
+        <Link href='/sign-up'>
+          <button className='flex items-center m-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
+            <ArrowLeftIcon className='mr-2' />
+            Go to Sign Up
+          </button>
+        </Link>
       </main>
     </div>
   )

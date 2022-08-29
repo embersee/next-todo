@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import Board from '../components/Board'
+import FullScreenLoader from '../components/utils/FullscreenLoader'
 import Head from 'next/head'
+import { Layout } from '../components/Layout'
 import type { NextPage } from 'next'
 import { requireAuth } from '../utils/requireAuth'
-import { signOut } from 'next-auth/react'
 import { trpc } from '../utils/trpc'
 
 export const getServerSideProps = requireAuth(async (ctx) => {
@@ -13,14 +14,18 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
 const Home: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)
+  const [currentBoard, setCurrentBoard] = useState(0)
 
   useEffect(() => {
     setIsBrowser(process.browser)
   }, [])
 
-  const { data, error, isLoading } = trpc.useQuery(['users.me'])
+  const { data, error, isLoading, isFetching } = trpc.useQuery(['users.me'])
 
   if (!data?.result) return null
+
+  // if (isLoading) return <FullScreenLoader />
+  // if (isFetching) return <FullScreenLoader />
 
   if (error) return <>{error.message}</>
 
@@ -33,16 +38,18 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main className='container mx-auto'>
-        <h1>{data.result.title}</h1>
-        {isBrowser ? <Board data={data.result.data} /> : null}
+      <main>
+        <Layout title={data.result.boards[currentBoard].title}>
+          {isBrowser ? (
+            <Board
+              data={data.result.boards[currentBoard].data}
+              title={data.result.boards[currentBoard].title}
+            />
+          ) : null}
+        </Layout>
       </main>
 
-      <footer className=''>
-        <button className='' onClick={() => signOut({ callbackUrl: '/' })}>
-          Logout
-        </button>
-      </footer>
+      <footer></footer>
     </div>
   )
 }

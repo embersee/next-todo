@@ -15,11 +15,11 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
 
   useEffect(() => {
     if (title === '') return
-    console.log(1)
+
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
-        console.log(2)
+
         handleAddColumn()
         setTitle('')
       }
@@ -34,8 +34,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
     setIsFocus(false)
     setIsBlur(false)
     setState((prev) => {
-      const columnIndex = prev.columnOrder.length
-      const newColumn = `column-${columnIndex}`
+      const newColumn = prev.columnOrder.slice(-1)[0]
 
       //check if there already is a existing new empty column, return nothing if there is more than 1 already existing column
       const filterEmptyColumns = _.filter(

@@ -108,13 +108,11 @@ const Input = ({ state, setState, show }: InputProps) => {
 
   const isDisabled = _.isEmpty(state.columns)
 
-  if (!show) return null
-
   return (
     <div
       className={`border-2 rounded-md dark:bg-night-sky bg-white dark:border-super-silver flex justify-center items-center max-w-screen-md mx-auto mt-2 transition-color ${
         error && 'border-rose-500'
-      }`}
+      } ${show ? 'block' : 'hidden'}`}
     >
       <Select
         className='my-react-select-container '

@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { signUpSchema, SignUp } from '../schema/user.schema'
 import { trpc } from '../utils/trpc'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 const SignUp: NextPage = () => {
   const router = useRouter()
@@ -36,44 +37,52 @@ const SignUp: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main>
+      <main className='flex flex-col items-center justify-center h-screen w-full'>
         <form
-          className='flex items-center justify-center h-screen w-full'
+          className='flex items-center justify-center '
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className=' w-96 bg-base-100 shadow-xl'>
+          <div className=' w-96 bg-base-100 shadow-xl border-2 rounded-md p-4'>
             <div className=''>
               <h1 className='text-xl'>Create an account!</h1>
               <h2 className='text-rose-500'>{error && error.message}</h2>
               <input
+                autoComplete='off'
                 type='text'
-                placeholder='Type your username...'
-                className='input input-bordered w-full max-w-xs my-2 bg-black-velvet'
+                placeholder='Your username...'
+                className='h-8 rounded-md pl-2 w-full max-w-xs my-2 dark:bg-black-velvet'
                 {...register('username')}
               />
               <input
                 type='email'
-                placeholder='Type your email...'
-                className='input input-bordered w-full max-w-xs bg-black-velvet'
+                placeholder='Your email...'
+                className='h-8 rounded-md pl-2 w-full max-w-xs dark:bg-black-velvet'
                 {...register('email')}
               />
               <input
+                autoComplete='off'
                 type='password'
-                placeholder='Type your password...'
-                className='input input-bordered w-full max-w-xs my-2 bg-black-velvet'
+                placeholder='Your password...'
+                className='h-8 rounded-md pl-2 w-full max-w-xs my-2 dark:bg-black-velvet'
                 {...register('password')}
               />
               <div className='flex justify-between'>
-                <Link href='/sign-in' className='link'>
-                  Go to login
-                </Link>
-                <button className='' type='submit'>
+                <button
+                  type='submit'
+                  className='inline-block mt-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                >
                   Sign Up
                 </button>
               </div>
             </div>
           </div>
         </form>
+        <Link href='/sign-in'>
+          <button className='flex items-center m-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
+            <ArrowLeftIcon className='mr-2' />
+            Go to login
+          </button>
+        </Link>
       </main>
     </div>
   )

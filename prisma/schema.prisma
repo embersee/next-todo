@@ -24,7 +24,7 @@ model User {
 
 model Board {
   id       Int    @id @default(autoincrement())
-  title    String @unique @db.VarChar(70)
+  title    String @db.VarChar(70)
   author   User?  @relation(fields: [authorId], references: [id])
   authorId Int
   data     Json?

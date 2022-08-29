@@ -148,9 +148,24 @@ export const userRouter = createRouter()
     input: DataSchema,
     resolve: async ({ ctx, input }) => {
       const { state, columnTitle } = input
-      const result = await ctx.prisma.board.update({
+
+      if (!ctx.session?.user?.email)
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User doesnt exist',
+        })
+      const me = await ctx.prisma.user.findUnique({
         where: {
-          title: columnTitle,
+          email: ctx.session.user.email,
+        },
+        include: {
+          boards: true,
+        },
+      })
+
+      const result = await ctx.prisma.board.updateMany({
+        where: {
+          authorId: me?.id,
         },
         data: {
           data: state,

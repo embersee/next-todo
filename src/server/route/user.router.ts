@@ -149,7 +149,7 @@ export const userRouter = createRouter()
     resolve: async ({ ctx, input }) => {
       const result = await ctx.prisma.board.update({
         where: {
-          title: input.columnTitle,
+          title: input.columnTitle.toString(),
         },
         data: {
           data: input.state,

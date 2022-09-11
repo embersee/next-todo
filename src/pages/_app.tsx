@@ -2,6 +2,7 @@ import '../styles/globals.css'
 
 import type { AppProps } from 'next/app'
 import { AppRouter } from '../server/route/app.router'
+import { Layout } from '../components/Layout'
 import { SessionProvider } from 'next-auth/react'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
@@ -11,7 +12,9 @@ import { withTRPC } from '@trpc/next'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
+      <Layout title=''>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   )
 }

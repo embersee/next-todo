@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { createRouter } from '../createRouter'
 import { hash } from 'argon2'
 import { signUpSchema } from '../../schema/user.schema'
+import { title } from 'process'
 import { z } from 'zod'
 
 const data = {
@@ -154,18 +155,13 @@ export const userRouter = createRouter()
           code: 'NOT_FOUND',
           message: 'User doesnt exist',
         })
-      const me = await ctx.prisma.user.findUnique({
-        where: {
-          email: ctx.session.user.email,
-        },
-        include: {
-          boards: true,
-        },
-      })
 
       const result = await ctx.prisma.board.updateMany({
         where: {
-          authorId: me?.id,
+          author: {
+            email: ctx.session.user.email,
+          },
+          title: columnTitle,
         },
         data: {
           data: state,
@@ -177,5 +173,26 @@ export const userRouter = createRouter()
         message: 'Updated data successfully',
         result: result,
       }
+    },
+  })
+  .query('board', {
+    input: z.string(),
+    resolve: async ({ ctx, input }) => {
+      if (!ctx.session?.user?.email)
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User doesnt exist',
+        })
+
+      const selectedBoard = await ctx.prisma.board.findFirst({
+        where: {
+          author: {
+            email: ctx.session.user.email,
+          },
+          title: input,
+        },
+      })
+
+      return { selectedBoard }
     },
   })

@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import Board from '../components/Board'
-import FullScreenLoader from '../components/utils/FullscreenLoader'
 import Head from 'next/head'
-import { Layout } from '../components/Layout'
+import Link from 'next/link'
 import type { NextPage } from 'next'
 import { requireAuth } from '../utils/requireAuth'
 import { trpc } from '../utils/trpc'
@@ -12,10 +10,8 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} }
 })
 
-const Home: NextPage = () => {
+const Dashboard: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)
-  const [currentBoard, setCurrentBoard] = useState(0)
-
   useEffect(() => {
     setIsBrowser(process.browser)
   }, [])
@@ -38,15 +34,21 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main>
-        <Layout title={data.result.boards[currentBoard].title}>
-          {isBrowser ? (
-            <Board
-              data={data.result.boards[currentBoard].data}
-              title={data.result.boards[currentBoard].title}
-            />
-          ) : null}
-        </Layout>
+      <main className='flex justify-center'>
+        {isBrowser
+          ? data.result.boards.map((board, i) => (
+              <Link
+                key={i}
+                href={{
+                  pathname: `/boards/${board.title}`,
+                }}
+              >
+                <button className='flex items-center m-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
+                  {board.title}
+                </button>
+              </Link>
+            ))
+          : null}
       </main>
 
       <footer></footer>
@@ -54,4 +56,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default Dashboard

@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import { Layout } from '../components/Layout'
 import Link from 'next/link'
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
@@ -15,18 +14,16 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <Layout title={'hi im tittle =)'}>
-        <div className='flex-col items-center my-auto text-center '>
-          <h1>hello this is main</h1>
-          {session && (
-            <Link href='/dashboard'>
-              <button className='inline-block mt-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-                go to dashboard
-              </button>
-            </Link>
-          )}
-        </div>
-      </Layout>
+      <div className='flex-col items-center my-auto text-center '>
+        <h1>hello this is main</h1>
+        {session && (
+          <Link href='/dashboard'>
+            <button className='inline-block mt-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
+              go to dashboard
+            </button>
+          </Link>
+        )}
+      </div>
 
       <footer className=''></footer>
     </div>

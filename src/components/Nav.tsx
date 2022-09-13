@@ -1,9 +1,11 @@
 import { signOut, useSession } from 'next-auth/react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 export const Nav = ({ title }: { title: string }) => {
   const { data: session, status } = useSession()
+  const router = useRouter()
 
   return (
     <>
@@ -36,16 +38,19 @@ export const Nav = ({ title }: { title: string }) => {
             </div>
           ) : (
             <>
-              <Link href='/sign-up'>
-                <button className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-                  Sign Up
-                </button>
-              </Link>
-              <Link href='/sign-in'>
-                <button className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-                  Sign In
-                </button>
-              </Link>
+              <button
+                onClick={() => router.push('/sign-up')}
+                className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+              >
+                Sign Up
+              </button>
+
+              <button
+                onClick={() => router.push('/sign-in')}
+                className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+              >
+                Sign In
+              </button>
             </>
           )}
         </div>

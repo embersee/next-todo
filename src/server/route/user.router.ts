@@ -148,7 +148,7 @@ export const userRouter = createRouter()
   .mutation('change', {
     input: DataSchema,
     resolve: async ({ ctx, input }) => {
-      const { state, columnTitle } = input
+      const { state, boardTitle } = input
 
       if (!ctx.session?.user?.email)
         throw new trpc.TRPCError({
@@ -161,10 +161,11 @@ export const userRouter = createRouter()
           author: {
             email: ctx.session.user.email,
           },
-          title: columnTitle,
+          title: boardTitle,
         },
         data: {
           data: state,
+          title: boardTitle,
         },
       })
 
@@ -194,5 +195,32 @@ export const userRouter = createRouter()
       })
 
       return { selectedBoard }
+    },
+  })
+  .mutation('titleChange', {
+    input: z.object({ old: z.string(), new: z.string() }),
+    resolve: async ({ ctx, input }) => {
+      if (!ctx.session?.user?.email)
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User doesnt exist',
+        })
+
+      const newBoardTitle = await ctx.prisma.board.updateMany({
+        where: {
+          author: {
+            email: ctx.session.user.email,
+          },
+          title: input.old,
+        },
+        data: {
+          title: input.new,
+        },
+      })
+      return {
+        status: 201,
+        message: 'Updated Title successfully',
+        result: newBoardTitle,
+      }
     },
   })

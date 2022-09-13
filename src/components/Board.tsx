@@ -1,7 +1,8 @@
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
-import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
+import { MinusIcon, Pencil1Icon, PlusIcon } from '@radix-ui/react-icons'
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { BoardTitle } from './BoardTitle'
 import Column from './Column'
 import { Data } from '../ts/interfaces'
 import Input from './Input'
@@ -11,12 +12,13 @@ import { trpc } from '../utils/trpc'
 const Board = ({ data, title }: { data: any; title: string }) => {
   const [state, setState] = useState<Data>(data)
   const [show, setShow] = useState(false)
+
   const { mutate, error } = trpc.useMutation(['users.change'], {
     onSuccess: () => {},
   })
 
   useEffect(() => {
-    mutate({ columnTitle: title, state: state })
+    mutate({ boardTitle: title, state: state })
   }, [mutate, title, state])
 
   const onDragEnd = (res: DropResult) => {
@@ -174,7 +176,7 @@ const Board = ({ data, title }: { data: any; title: string }) => {
   }, [])
 
   useEffect(() => {
-    // attach the event listener
+    // attach the event listener for Meta key
     document.addEventListener('keydown', handleComboKey)
 
     // remove the event listener
@@ -183,8 +185,10 @@ const Board = ({ data, title }: { data: any; title: string }) => {
     }
   }, [handleComboKey])
 
+  console.log('render board')
+
   return (
-    <div>
+    <div className='flex flex-col justify-center'>
       <Input state={state} setState={setState} show={show} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
@@ -210,25 +214,21 @@ const Board = ({ data, title }: { data: any; title: string }) => {
               {placeholder}
 
               <div className='flex flex-col mb-2 mt-2'>
-                {state.columnOrder.length < 5 ? (
+                {state.columnOrder.length < 5 && (
                   <button
                     onClick={addColumn}
                     className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
                   >
                     <PlusIcon className='h-4 w-4' />
                   </button>
-                ) : (
-                  ''
                 )}
-                {state.columnOrder.length > 0 ? (
+                {state.columnOrder.length > 0 && (
                   <button
                     onClick={deleteColumn}
                     className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-rose-500 transition-colors duration-200'
                   >
                     <MinusIcon className='h-4 w-4' />
                   </button>
-                ) : (
-                  ''
                 )}
               </div>
             </div>

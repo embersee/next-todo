@@ -138,9 +138,9 @@ const Input = ({ state, setState, show }: InputProps) => {
         disabled={isDisabled}
       />
       <button
-        // onClick={handleClick}
+        onClick={handleClick}
         disabled={isDisabled}
-        onClick={() => console.log(JSON.stringify(state, undefined, 4))}
+        // onClick={() => console.log(JSON.stringify(state, undefined, 4))}
         className='inline-block m-2 px-6 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
       >
         add

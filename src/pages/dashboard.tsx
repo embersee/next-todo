@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import { BoardTitle } from '../components/BoardTitle'
+import { Data } from '../ts/interfaces'
+import FullScreenLoader from '../components/utils/FullscreenLoader'
 import Head from 'next/head'
 import Link from 'next/link'
 import type { NextPage } from 'next'
@@ -12,18 +15,20 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
 const Dashboard: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)
+  const [reRender, setRerender] = useState(false)
+
+  const { data, error, isLoading, isFetching } = trpc.useQuery(['users.me'])
+
   useEffect(() => {
     setIsBrowser(process.browser)
   }, [])
 
-  const { data, error, isLoading, isFetching } = trpc.useQuery(['users.me'])
-
   if (!data?.result) return null
 
-  // if (isLoading) return <FullScreenLoader />
+  if (isLoading) return <FullScreenLoader />
   // if (isFetching) return <FullScreenLoader />
 
-  if (error) return <>{error.message}</>
+  console.log('render dashboard')
 
   return (
     <div className='h-screen w-screen'>
@@ -34,21 +39,39 @@ const Dashboard: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main className='flex justify-center'>
-        {isBrowser
-          ? data.result.boards.map((board, i) => (
-              <Link
-                key={i}
-                href={{
-                  pathname: `/boards/${board.title}`,
-                }}
-              >
-                <button className='flex items-center m-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-                  {board.title}
-                </button>
-              </Link>
-            ))
-          : null}
+      <main className='flex flex-col justify-center'>
+        <h1 className='text-3xl text-center'>My Boards</h1>
+        <div className='flex justify-center m-2'>
+          {isBrowser &&
+            data.result.boards.map((board, i) => {
+              const boardData = JSON.stringify(board?.data)
+              const boardDataParsed: Data = JSON.parse(boardData)
+              const currentTitle = board.title
+              return (
+                <div
+                  key={i}
+                  className='border-2 rounded-md w-64 mx-10 flex flex-col justify-center text-center'
+                >
+                  <BoardTitle currentTitle={currentTitle} />
+                  <h3>
+                    {'Columns: ' + Object.keys(boardDataParsed.columns).length}
+                  </h3>
+                  <h3>
+                    {'Tasks: ' + Object.keys(boardDataParsed.tasks).length}
+                  </h3>
+                  <Link
+                    href={{
+                      pathname: `/boards/${currentTitle}`,
+                    }}
+                  >
+                    <button className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
+                      Open
+                    </button>
+                  </Link>
+                </div>
+              )
+            })}
+        </div>
       </main>
 
       <footer></footer>

@@ -14,7 +14,6 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
 const MyBoard: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)
-  const [currentBoard, setCurrentBoard] = useState(0)
 
   useEffect(() => {
     setIsBrowser(process.browser)
@@ -23,22 +22,17 @@ const MyBoard: NextPage = () => {
   const router = useRouter()
   const title = router.query.board as string
 
-  const { data: data1 } = trpc.useQuery(['users.me'])
-
   const { data, error, isLoading, isFetching } = trpc.useQuery([
     'users.board',
     title,
   ])
-
-  // if (!data?.result) return null
 
   if (isLoading) return <FullScreenLoader />
   if (isFetching) return <FullScreenLoader />
 
   if (error) return <>{error.message}</>
 
-  console.log(data)
-  console.log(data1)
+  console.log('render [board]')
 
   return (
     <div className='h-screen w-screen'>

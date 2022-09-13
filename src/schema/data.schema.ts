@@ -13,7 +13,7 @@ const column = z.object({
 })
 
 export const DataSchema = z.object({
-  columnTitle: z.string(),
+  boardTitle: z.string(),
   state: z.object({
     tasks: z.record(z.string(), task.extend({})),
     columns: z.record(z.string(), column.extend({})),

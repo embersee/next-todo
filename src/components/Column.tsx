@@ -178,7 +178,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
           >
             <ChevronDownIcon
               className={`h-6 w-6 shrink-0 cursor-pointer transition-transform duration-300 ${
-                isOpen && 'rotate-180'
+                isOpen && '-rotate-90'
               }`}
               onClick={() => setOpen(!isOpen)}
             />

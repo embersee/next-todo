@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import Board from '../../components/Board'
+import { BoardTitle } from '../../components/BoardTitle'
 import FullScreenLoader from '../../components/utils/FullscreenLoader'
 import Head from 'next/head'
 import type { NextPage } from 'next'
@@ -28,7 +29,7 @@ const MyBoard: NextPage = () => {
   ])
 
   if (isLoading) return <FullScreenLoader />
-  if (isFetching) return <FullScreenLoader />
+  // if (isFetching) return <FullScreenLoader />
 
   if (error) return <>{error.message}</>
 
@@ -44,6 +45,9 @@ const MyBoard: NextPage = () => {
       </Head>
 
       <main>
+        <div className='absolute top-2 left-1/2 transform -translate-x-1/2 '>
+          <BoardTitle currentTitle={title} textSize='text-3xl' />
+        </div>
         {isBrowser ? (
           <Board
             data={data?.selectedBoard?.data}

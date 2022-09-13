@@ -1,12 +1,10 @@
 import * as trpc from '@trpc/server'
 
-import { Data } from '../../ts/interfaces'
 import { DataSchema } from '../../schema/data.schema'
 import { Prisma } from '@prisma/client'
 import { createRouter } from '../createRouter'
 import { hash } from 'argon2'
 import { signUpSchema } from '../../schema/user.schema'
-import { title } from 'process'
 import { z } from 'zod'
 
 const data = {
@@ -222,5 +220,35 @@ export const userRouter = createRouter()
         message: 'Updated Title successfully',
         result: newBoardTitle,
       }
+    },
+  })
+  .mutation('createBoard', {
+    resolve: async ({ ctx }) => {
+      if (!ctx.session?.user?.email)
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User doesnt exist',
+        })
+
+      const me = await ctx.prisma.user.findUnique({
+        where: {
+          email: ctx.session.user.email,
+        },
+        include: {
+          boards: true,
+        },
+      })
+
+      if (!me) return
+      const createBoard = await ctx.prisma.board.create({
+        data: {
+          title: `${
+            me?.username.charAt(0).toUpperCase() + me?.username.slice(1)
+          }'s Board ${me.boards.length}`,
+          authorId: me?.id,
+          data: data,
+        },
+      })
+      return createBoard
     },
   })

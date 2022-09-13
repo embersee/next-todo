@@ -15,9 +15,15 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
 const Dashboard: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)
-  const [reRender, setRerender] = useState(false)
+
+  const trpcClient = trpc.useContext()
 
   const { data, error, isLoading, isFetching } = trpc.useQuery(['users.me'])
+  const { mutate } = trpc.useMutation(['users.createBoard'], {
+    onSuccess: () => {
+      trpcClient.refetchQueries(['users.me'])
+    },
+  })
 
   useEffect(() => {
     setIsBrowser(process.browser)
@@ -27,6 +33,10 @@ const Dashboard: NextPage = () => {
 
   if (isLoading) return <FullScreenLoader />
   // if (isFetching) return <FullScreenLoader />
+
+  const createBoard = () => {
+    mutate()
+  }
 
   console.log('render dashboard')
 
@@ -40,7 +50,9 @@ const Dashboard: NextPage = () => {
       </Head>
 
       <main className='flex flex-col justify-center'>
-        <h1 className='text-3xl text-center'>My Boards</h1>
+        <h1 className='text-3xl font-bold absolute top-2 my-[2px] left-1/2 transform -translate-x-1/2 '>
+          My Boards
+        </h1>
         <div className='flex justify-center m-2'>
           {isBrowser &&
             data.result.boards.map((board, i) => {
@@ -50,9 +62,9 @@ const Dashboard: NextPage = () => {
               return (
                 <div
                   key={i}
-                  className='border-2 rounded-md w-64 mx-10 flex flex-col justify-center text-center'
+                  className='border-2 rounded-md w-72 mx-10 py-2 flex flex-col justify-center text-center bg-night-sky'
                 >
-                  <BoardTitle currentTitle={currentTitle} />
+                  <BoardTitle currentTitle={currentTitle} textSize='text-xl' />
                   <h3>
                     {'Columns: ' + Object.keys(boardDataParsed.columns).length}
                   </h3>
@@ -64,13 +76,21 @@ const Dashboard: NextPage = () => {
                       pathname: `/boards/${currentTitle}`,
                     }}
                   >
-                    <button className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
+                    <button className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
                       Open
                     </button>
                   </Link>
                 </div>
               )
             })}
+          <div className='border-2 rounded-md h-16 flex justify-center hover:border-blue-500 transition duration-250 ease-in-out bg-night-sky'>
+            <button
+              onClick={createBoard}
+              className='text-xl h-full w-full px-10'
+            >
+              Create new board
+            </button>
+          </div>
         </div>
       </main>
 

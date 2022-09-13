@@ -1,12 +1,20 @@
-import { Dispatch, SetStateAction, useState } from 'react'
-
 import { Pencil1Icon } from '@radix-ui/react-icons'
 import { trpc } from '../utils/trpc'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
-export const BoardTitle = ({ currentTitle }: { currentTitle: string }) => {
+export const BoardTitle = ({
+  currentTitle,
+  textSize,
+}: {
+  currentTitle: string
+  textSize: string
+}) => {
   const [isHovering, setIsHovering] = useState(false)
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
+
+  const router = useRouter()
 
   const [titleChange, setTitleChange] = useState(false)
   const [newBoardTitle, setNewBoardTitle] = useState('')
@@ -15,8 +23,10 @@ export const BoardTitle = ({ currentTitle }: { currentTitle: string }) => {
 
   const { mutate } = trpc.useMutation(['users.titleChange'], {
     onSuccess: () => {
-      trpcClient.invalidateQueries(['users.me'])
-      // trpcClient.refetchQueries(['users.me'])
+      // trpcClient.invalidateQueries(['users.me'])
+      router.pathname == '/dashboard'
+        ? trpcClient.refetchQueries(['users.me'])
+        : router.push(`/boards/${newBoardTitle}`)
     },
   })
 
@@ -37,7 +47,11 @@ export const BoardTitle = ({ currentTitle }: { currentTitle: string }) => {
 
   const SubmitBoardTitle = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault
-    if (newBoardTitle === '') return
+    if (!newBoardTitle.length || !newBoardTitle.trim()) {
+      setNewBoardTitle('')
+      setTitleChange((prev) => !prev)
+      return
+    }
     setTitleChange((prev) => !prev)
     mutate({ old: currentTitle, new: newBoardTitle })
   }
@@ -50,7 +64,9 @@ export const BoardTitle = ({ currentTitle }: { currentTitle: string }) => {
     >
       {!titleChange ? (
         <>
-          <h1 className='text-xl text-center font-bold ml-[28px] my-[2px]'>
+          <h1
+            className={`${textSize} text-center font-bold ml-[28px] my-[2px]`}
+          >
             {currentTitle}
           </h1>
         </>
@@ -59,7 +75,7 @@ export const BoardTitle = ({ currentTitle }: { currentTitle: string }) => {
           <input
             autoFocus
             type='text'
-            className={`dark:bg-night-sky text-xl font-bold w-full text-center outline-none transition-colors duration-300  ${
+            className={`dark:bg-night-sky ${textSize} font-bold w-full text-center outline-none transition-colors duration-300  ${
               isFocus
                 ? 'border-2 rounded-md border-orange-500'
                 : isBlur

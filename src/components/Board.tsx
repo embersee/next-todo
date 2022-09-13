@@ -12,9 +12,11 @@ import { trpc } from '../utils/trpc'
 const Board = ({ data, title }: { data: any; title: string }) => {
   const [state, setState] = useState<Data>(data)
   const [show, setShow] = useState(false)
-
+  const trpcClient = trpc.useContext()
   const { mutate, error } = trpc.useMutation(['users.change'], {
-    onSuccess: () => {},
+    onSuccess: () => {
+      trpcClient.invalidateQueries(['users.board'])
+    },
   })
 
   useEffect(() => {

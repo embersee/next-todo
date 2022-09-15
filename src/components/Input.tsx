@@ -61,7 +61,13 @@ const Input = ({ state, setState, show }: InputProps) => {
         ...prev,
         tasks: {
           ...prev.tasks,
-          [task]: { id: task, content: text, objectives: [] },
+          [task]: {
+            id: task,
+            content: text,
+            priority: '',
+            label: '',
+            objectives: [],
+          },
         },
         columns: {
           ...prev.columns,

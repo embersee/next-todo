@@ -5,6 +5,8 @@ export const data: Data = {
     'task-1': {
       id: 'task-1',
       content: 'Take out the garbage',
+      priority: '',
+      label: '',
       objectives: [
         { step: 'get garbage bag', complete: true },
         { step: 'collect trash', complete: false },
@@ -13,6 +15,8 @@ export const data: Data = {
     'task-2': {
       id: 'task-2',
       content: 'Watch my favorite show',
+      priority: '',
+      label: '',
       objectives: [
         { step: 'plug in the tv', complete: true },
         { step: 'find the remote', complete: true },
@@ -22,11 +26,15 @@ export const data: Data = {
     'task-3': {
       id: 'task-3',
       content: 'Charge my phone',
+      priority: '',
+      label: '',
       objectives: [],
     },
     'task-4': {
       id: 'task-4',
       content: 'Cook dinner',
+      priority: '',
+      label: '',
       objectives: [],
     },
   },

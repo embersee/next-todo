@@ -80,7 +80,13 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         ...prev,
         tasks: {
           ...prev.tasks,
-          [task]: { id: task, content: text, objectives: [] },
+          [task]: {
+            id: task,
+            content: text,
+            priority: '',
+            label: '',
+            objectives: [],
+          },
         },
         columns: {
           ...prev.columns,

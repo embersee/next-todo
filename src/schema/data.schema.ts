@@ -3,6 +3,8 @@ import { z } from 'zod'
 const task = z.object({
   id: z.string(),
   content: z.string(),
+  priority: z.string(),
+  label: z.string(),
   objectives: z.array(z.object({ step: z.string(), complete: z.boolean() })),
 })
 

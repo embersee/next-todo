@@ -35,6 +35,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
                 [task.id]: {
                   id: prev.tasks[task.id].id,
                   content: prev.tasks[task.id].content,
+                  priority: prev.tasks[task.id].priority,
+                  label: prev.tasks[task.id].label,
                   objectives: [
                     ...prev.tasks[task.id].objectives.filter(
                       (item) => item.step !== target.id
@@ -94,20 +96,26 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     setIsBlur(false)
     setState((prev) => {
       const index = _.size(prev.tasks)
-      const task = `task-${index}`
+      const taskName = `task-${index}`
 
       return {
         ...prev,
         tasks: {
           ...prev.tasks,
-          [task]: { id: task, content: text, objectives: [] },
+          [taskName]: {
+            id: taskName, //??
+            content: text,
+            priority: prev.tasks[task.id].priority,
+            label: prev.tasks[task.id].label,
+            objectives: [],
+          },
         },
         columns: {
           ...prev.columns,
           [column]: {
             id: column,
             title: prev.columns[column].title,
-            taskIds: [...prev.columns[column].taskIds.slice(0, -1), task],
+            taskIds: [...prev.columns[column].taskIds.slice(0, -1), taskName],
           },
         },
       }
@@ -144,6 +152,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           [task.id]: {
             id: prev.tasks[task.id].id,
             content: prev.tasks[task.id].content,
+            priority: prev.tasks[task.id].priority,
+            label: prev.tasks[task.id].label,
             objectives: [...task.objectives, { step: step, complete: false }],
           },
         },
@@ -162,6 +172,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           [task.id]: {
             id: prev.tasks[task.id].id,
             content: prev.tasks[task.id].content,
+            priority: prev.tasks[task.id].priority,
+            label: prev.tasks[task.id].label,
             objectives: [...updatedCheckedItems],
           },
         },

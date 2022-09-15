@@ -1,8 +1,7 @@
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
-import { MinusIcon, Pencil1Icon, PlusIcon } from '@radix-ui/react-icons'
+import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { BoardTitle } from './BoardTitle'
 import Column from './Column'
 import { Data } from '../ts/interfaces'
 import Input from './Input'

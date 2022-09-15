@@ -9,6 +9,8 @@ export interface Task {
   map?: any
   id: string
   content: string
+  priority: string
+  label: string
   objectives: Objectives[]
 }
 

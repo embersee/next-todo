@@ -56,7 +56,7 @@ export const nextAuthOptions: NextAuthOptions = {
     },
   },
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: 'super-secret', //'supersecret' // also in vercel env variables
     maxAge: 15 * 24 * 30 * 60, // 15 days
   },
   pages: {

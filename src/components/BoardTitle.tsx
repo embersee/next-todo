@@ -44,10 +44,14 @@ export const BoardTitle = ({
           minWidth: '50px',
         },
       })
-      // trpcClient.invalidateQueries(['users.me'])
-      router.pathname == '/dashboard'
-        ? trpcClient.refetchQueries(['users.me'])
-        : router.push(`/boards/${newBoardTitle}`)
+      //trpcClient.invalidateQueries(['users.me'])
+      if (router.pathname == '/dashboard') {
+        trpcClient.refetchQueries(['users.me'])
+      } else {
+        trpcClient.refetchQueries(['users.me'])
+        trpcClient.refetchQueries(['users.board'])
+        router.push(`/boards/${newBoardTitle}`)
+      }
     },
   })
 

@@ -28,13 +28,13 @@ const MyBoard: NextPage = () => {
     title,
   ])
 
-  if (isLoading) return <FullScreenLoader />
+  if (isLoading || isFetching) return <FullScreenLoader />
   // if (isFetching) return <FullScreenLoader />
 
   if (error) return <>{error.message}</>
 
   return (
-    <div className='h-full w-screen'>
+    <div className='h-full w-full'>
       <Head>
         <title>{title}</title>
         <meta name='viewport' content='width=device-width, initial-scale=2' />

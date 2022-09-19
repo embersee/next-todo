@@ -187,7 +187,7 @@ const Board = ({ data, title }: { data: any; title: string }) => {
   }, [handleComboKey])
 
   return (
-    <div className='flex flex-col justify-center'>
+    <div className='flex flex-col ml-2'>
       <Input state={state} setState={setState} show={show} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
@@ -212,21 +212,21 @@ const Board = ({ data, title }: { data: any; title: string }) => {
               })}
               {placeholder}
 
-              <div className='flex flex-col mb-2 mt-2'>
+              <div className='flex flex-col mb-2 mt-2 mr-2'>
                 {state.columnOrder.length < 5 && (
                   <button
                     onClick={addColumn}
-                    className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                    className='border-2 bg-white dark:bg-black-velvet dark:border-transparent p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
                   >
-                    <PlusIcon className='h-4 w-4' />
+                    <PlusIcon className='h-5 w-5' />
                   </button>
                 )}
                 {state.columnOrder.length > 0 && (
                   <button
                     onClick={deleteColumn}
-                    className='border-2 bg-white dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-rose-500 transition-colors duration-200'
+                    className='border-2 bg-white dark:bg-black-velvet dark:border-transparent p-1 mb-2 rounded-md hover:border-rose-500 transition-colors duration-200'
                   >
-                    <MinusIcon className='h-4 w-4' />
+                    <MinusIcon className='h-5 w-5' />
                   </button>
                 )}
               </div>

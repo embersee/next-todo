@@ -119,7 +119,7 @@ const Dashboard: NextPage = () => {
                 return (
                   <div
                     key={i}
-                    className='border-2 rounded-md  py-2 flex flex-col justify-center text-center bg-white dark:bg-night-sky'
+                    className='border-2 border-transparent rounded-md  py-2 flex flex-col justify-center text-center bg-white dark:bg-night-sky'
                   >
                     <ContextMenuPrimitive.Root
                       onOpenChange={(open) => setContextOpen(open)}
@@ -148,7 +148,7 @@ const Dashboard: NextPage = () => {
                               shallow: true,
                             })
                           }
-                          className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-super-silver dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                          className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-super-silver dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
                         >
                           Open
                         </button>
@@ -158,7 +158,7 @@ const Dashboard: NextPage = () => {
                 )
               })}
 
-            <div className='border-2 rounded-md h-16 flex justify-center hover:border-blue-500 transition duration-250 ease-in-out bg-white dark:bg-night-sky'>
+            <div className='border-2 border-transparent rounded-md h-16 flex justify-center hover:border-blue-500 transition duration-250 ease-in-out bg-white dark:bg-night-sky'>
               <button
                 onClick={createBoard}
                 className='text-xl h-full w-full px-10'

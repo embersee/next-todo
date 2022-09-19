@@ -9,20 +9,20 @@ export const Nav = ({ title }: { title: string }) => {
 
   return (
     <>
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center bg-absence'>
         <div>
           <button
             onClick={() => router.push('/')}
-            className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+            className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-black-velvet leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
           >
             Home
           </button>
           {status === 'authenticated' && (
             <button
               onClick={() => router.push('/dashboard')}
-              className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+              className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-black-velvet leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
             >
-              My Boards
+              Dashboard
             </button>
           )}
         </div>
@@ -33,7 +33,7 @@ export const Nav = ({ title }: { title: string }) => {
             <div className='flex items-center'>
               <p className='h-6'>Signed in as {session.user?.email}</p>
               <button
-                className='flex items-center m-2 px-4 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                className='flex items-center m-2 px-4 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
                 onClick={() => signOut({ callbackUrl: '/' })}
               >
                 Logout
@@ -45,7 +45,7 @@ export const Nav = ({ title }: { title: string }) => {
                 onClick={() =>
                   router.push('/sign-up', undefined, { shallow: true })
                 }
-                className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                className='inline-block m-2 px-6 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
               >
                 Sign Up
               </button>
@@ -54,7 +54,7 @@ export const Nav = ({ title }: { title: string }) => {
                 onClick={() =>
                   router.push('/sign-in', undefined, { shallow: true })
                 }
-                className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                className='inline-block m-2 px-6 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
               >
                 Sign In
               </button>

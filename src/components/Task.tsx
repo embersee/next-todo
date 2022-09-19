@@ -335,13 +335,18 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           <div
             {...draggableProps}
             ref={innerRef}
-            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mt-2 h-auto min-h-[43px] transition-colors duration-300 ${
-              isFocus
-                ? 'transition-none border-orange-500 '
+            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mt-2 h-auto min-h-[43px] transition-colors duration-300
+            ${
+              contextOpen
+                ? 'border-blue-400 dark:border-blue-400'
+                : snapshot.isDragging
+                ? 'border-blue-400 dark:border-blue-400'
+                : isFocus
+                ? ' border-orange-500 '
                 : isBlur
-                ? 'border-rose-500 '
-                : snapshot.isDragging && ' border-blue-400 '
-            } ${contextOpen && 'border-blue-400'}`}
+                ? ' border-rose-500 '
+                : 'border-black-velvet'
+            } `}
           >
             <ContextMenuPrimitive.Root
               onOpenChange={(open) => setContextOpen(open)}

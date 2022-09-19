@@ -19,6 +19,7 @@ module.exports = {
         'night-sky': '#262635',
         'super-silver': '#efefef',
         'black-velvet': '#1E1E2A',
+        'absence': '#0D0D12',
       },
       willChange: {
         'transform-opacity-height': 'transform, opacity, height',

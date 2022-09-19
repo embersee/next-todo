@@ -256,10 +256,10 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         <div
           {...draggableProps}
           ref={innerRef}
-          className={`w-full border-2 bg-white dark:bg-night-sky border-night-sky/50 dark:border-super-silver rounded-md my-2 mr-2 flex flex-col max-w-xs h-fit transition-colors ${
+          className={`w-full border-2 bg-white dark:bg-night-sky rounded-md my-2 mr-2 flex flex-col max-w-s h-fit transition-colors ${
             isDragging
               ? 'border-blue-600 dark:border-blue-600'
-              : 'border-inherit'
+              : ' border-transparent'
           } ${contextOpen && 'border-blue-600 dark:border-blue-600'}`}
         >
           <ContextMenuPrimitive.Root
@@ -275,7 +275,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
               />
               <div
                 {...dragHandleProps}
-                className='p-2 box-border flex flex-row justify-start items-center '
+                className='box-border flex flex-row justify-start items-center m-2'
               >
                 <ChevronDownIcon
                   className={`h-6 w-6 shrink-0 cursor-pointer transition-transform duration-300 ${
@@ -335,18 +335,18 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                         {placeholder}
                       </div>
 
-                      <div className='flex flex-row pl-2 mt-2'>
+                      <div className='flex flex-row pl-2 mt-2 '>
                         <button
-                          className='border-2 dark:bg-black-velvet dark:border-super-silver p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                          className='border-2 border-transparent p-1 my-2 rounded-md dark:bg-black-velvet hover:border-green-500 transition-colors duration-200'
                           onClick={() => handleAddTask(column.id, '')}
                         >
-                          <PlusIcon className='h-4 w-4' />
+                          <PlusIcon className='h-5 w-5' />
                         </button>
                         <button
-                          className='border-2 dark:bg-black-velvet  dark:border-super-silver p-1 mb-2 rounded-md ml-2 hover:border-rose-500 transition-colors duration-200'
+                          className='border-2 border-transparent p-1 my-2 rounded-md dark:bg-black-velvet ml-2 hover:border-rose-500 transition-colors duration-200'
                           onClick={() => handleDeleteTask(column.id)}
                         >
-                          <MinusIcon className='h-4 w-4' />
+                          <MinusIcon className='h-5 w-5' />
                         </button>
                       </div>
                     </Tree>

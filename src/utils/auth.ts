@@ -1,12 +1,15 @@
-import Credentials from 'next-auth/providers/credentials'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { NextAuthOptions } from 'next-auth'
 import { createUserSchema } from '../schema/user.schema'
 import { prisma } from './prisma'
 import { verify } from 'argon2'
 
 export const nextAuthOptions: NextAuthOptions = {
+  session: {
+    strategy: 'jwt',
+  },
   providers: [
-    Credentials({
+    CredentialsProvider({
       name: 'credentials',
       credentials: {
         username: { label: 'Username', type: 'text' },
@@ -32,7 +35,7 @@ export const nextAuthOptions: NextAuthOptions = {
         const result = {
           id: user.id,
           email: user.email,
-          username: user.username,
+          name: user.username,
         }
 
         return result

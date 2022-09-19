@@ -33,10 +33,8 @@ const MyBoard: NextPage = () => {
 
   if (error) return <>{error.message}</>
 
-  console.log('render [board]')
-
   return (
-    <div className='h-screen w-screen'>
+    <div className='h-full w-screen'>
       <Head>
         <title>{title}</title>
         <meta name='viewport' content='width=device-width, initial-scale=2' />

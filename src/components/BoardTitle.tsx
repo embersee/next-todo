@@ -1,4 +1,5 @@
 import { Pencil1Icon } from '@radix-ui/react-icons'
+import toast from 'react-hot-toast'
 import { trpc } from '../utils/trpc'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -22,7 +23,27 @@ export const BoardTitle = ({
   const trpcClient = trpc.useContext()
 
   const { mutate } = trpc.useMutation(['users.titleChange'], {
+    onMutate: () => {
+      toast.loading('Please wait...', {
+        id: 'titleChange',
+        style: {
+          borderRadius: '10px',
+          background: '#1E1E2A', //#1E1E2A
+          color: '#fff',
+          minWidth: '50px',
+        },
+      })
+    },
     onSuccess: () => {
+      toast.success('Title changed', {
+        id: 'titleChange',
+        style: {
+          borderRadius: '10px',
+          background: '#1E1E2A', //#22C55E
+          color: '#fff',
+          minWidth: '50px',
+        },
+      })
       // trpcClient.invalidateQueries(['users.me'])
       router.pathname == '/dashboard'
         ? trpcClient.refetchQueries(['users.me'])
@@ -58,7 +79,7 @@ export const BoardTitle = ({
 
   return (
     <div
-      className='flex justify-center mx-auto'
+      className='flex justify-center'
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
     >
@@ -75,7 +96,7 @@ export const BoardTitle = ({
           <input
             autoFocus
             type='text'
-            className={`dark:bg-night-sky ${textSize} font-bold w-full text-center outline-none transition-colors duration-300  ${
+            className={`dark:bg-night-sky ${textSize} font-bold mx-4 w-[200px] text-center outline-none transition-colors duration-300  ${
               isFocus
                 ? 'border-2 rounded-md border-orange-500'
                 : isBlur

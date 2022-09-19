@@ -1,7 +1,11 @@
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+
 import { Draggable, DraggableStateSnapshot } from 'react-beautiful-dnd'
 import { useEffect, useRef, useState } from 'react'
 
 import { Pencil1Icon } from '@radix-ui/react-icons'
+import { Priority } from './Priority'
+import { TaskContextMenu } from './utils/TaskContextMenu'
 import { TaskProps } from '../ts/interfaces'
 import { Tree } from './utils/Tree'
 import _ from 'lodash'
@@ -16,6 +20,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
   const [text, setText] = useState('')
   const [addStep, setAddStep] = useState(false)
   const [completeObjectives, setCompleteObjectives] = useState<number>()
+  const [renameTrigger, setRenameTrigger] = useState(false)
+  const [contextOpen, setContextOpen] = useState(false)
 
   const renderDraggable = useDraggableInPortal()
 
@@ -75,13 +81,19 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     textareaRef.current.blur
   }, [step])
 
-  //set task content
+  //set task title
   useEffect(() => {
     if (text === '') return
     const keyDownTaskHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault()
-        setTaskTitle()
+
+        if (renameTrigger) {
+          setRetriggerTaskTitle()
+        } else {
+          setTaskTitle()
+        }
+        setRenameTrigger(false)
         setText('')
       }
     }
@@ -105,8 +117,8 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           [taskName]: {
             id: taskName, //??
             content: text,
-            priority: prev.tasks[task.id].priority,
-            label: prev.tasks[task.id].label,
+            priority: prev.tasks[taskName].priority,
+            label: prev.tasks[taskName].label,
             objectives: [],
           },
         },
@@ -116,6 +128,34 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
             id: column,
             title: prev.columns[column].title,
             taskIds: [...prev.columns[column].taskIds.slice(0, -1), taskName],
+          },
+        },
+      }
+    })
+  }
+
+  const setRetriggerTaskTitle = () => {
+    setIsFocus(false)
+    setIsBlur(false)
+    setState((prev) => {
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task.id]: {
+            id: task.id, //??
+            content: text,
+            priority: prev.tasks[task.id].priority,
+            label: prev.tasks[task.id].label,
+            objectives: prev.tasks[task.id].objectives,
+          },
+        },
+        columns: {
+          ...prev.columns,
+          [column]: {
+            id: column,
+            title: prev.columns[column].title,
+            taskIds: prev.columns[column].taskIds,
           },
         },
       }
@@ -197,6 +237,89 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     setIsBlur(false)
   }
 
+  const renameTask = () => {
+    setRenameTrigger(true)
+
+    setState((prev) => {
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task.id]: {
+            id: prev.tasks[task.id].id,
+            content: '',
+            priority: prev.tasks[task.id].priority,
+            label: prev.tasks[task.id].label,
+            objectives: prev.tasks[task.id].objectives,
+          },
+        },
+      }
+    })
+  }
+
+  const givePriority = ({ prio }: { prio: string }) => {
+    setState((prev) => {
+      return {
+        ...prev,
+        tasks: {
+          ...prev.tasks,
+          [task.id]: {
+            id: prev.tasks[task.id].id,
+            content: prev.tasks[task.id].content,
+            priority: prio,
+            label: prev.tasks[task.id].label,
+            objectives: prev.tasks[task.id].objectives,
+          },
+        },
+      }
+    })
+  }
+
+  const deleteTask = () => {
+    setState((prev) => {
+      //get rid of last task in selected column( delete it)
+      const taskToDelete = task.id
+      const newTaskIds = [
+        ...prev.columns[column].taskIds.filter((task) => task !== taskToDelete),
+      ]
+
+      const newColumns = {
+        ...prev.columns,
+        [column]: {
+          id: column,
+          title: prev.columns[column].title,
+          taskIds: newTaskIds,
+        },
+      }
+
+      //get all tasks inside [column-name].taskIds and combine into single array
+      const combinedArray: string[] = []
+
+      Object.keys(prev.columns).forEach((key) => {
+        combinedArray.push(...newColumns[key].taskIds)
+      })
+      //a collator allows for sorting an array of strings with number values inside, so here its 'column-1, column-2' etc, so i sort it in ascending numeric value
+      var collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      })
+
+      combinedArray.sort(collator.compare) //sort array with collator
+
+      const filteredTasksInColumn = _.filter(prev.tasks, (task) =>
+        combinedArray.includes(task.id)
+      )
+
+      //create new tasks object using the array of task names and their respected properties
+      const tasksObject = _.zipObject(combinedArray, filteredTasksInColumn)
+      return {
+        ...prev,
+        tasks: tasksObject,
+        columns: newColumns,
+      }
+    })
+  }
+
   return (
     <Draggable
       draggableId={task.id}
@@ -217,103 +340,122 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
                 ? 'transition-none border-orange-500 '
                 : isBlur
                 ? 'border-rose-500 '
-                : snapshot.isDragging
-                ? ' border-blue-400 '
-                : ' hover:border-blue-400'
-            } `}
+                : snapshot.isDragging && ' border-blue-400 '
+            } ${contextOpen && 'border-blue-400'}`}
           >
-            <div
-              {...dragHandleProps}
-              className='flex flex-row justify-between items-center select-none cursor-pointer h-auto leading-normal'
+            <ContextMenuPrimitive.Root
+              onOpenChange={(open) => setContextOpen(open)}
             >
-              {task.content ? (
-                <span
-                  onClick={() => {
-                    setAddStep(!(task.objectives.length > 0) ? true : false),
-                      setOpen((prev) => !prev)
-                  }}
+              <ContextMenuPrimitive.Trigger>
+                <TaskContextMenu
+                  renameTask={renameTask}
+                  givePriority={givePriority}
+                  deleteTask={deleteTask}
+                />
+
+                <div
+                  {...dragHandleProps}
+                  className='flex flex-row justify-between items-center select-none cursor-pointer h-auto leading-normal'
                 >
-                  {task.content}{' '}
-                  <span
-                    className={`${
-                      (task.objectives.length && completeObjectives ? 1 : 0)
-                        ? `opacity-100`
-                        : 'opacity-0'
-                    }`}
-                  >
-                    {completeObjectives}/{task.objectives.length}
-                  </span>
-                </span>
-              ) : (
-                <input
-                  autoFocus
-                  type='text'
-                  value={text}
-                  onChange={(e) => handleChange(e.target.value)}
-                  onFocus={focusHandler}
-                  onBlur={blurHandler}
-                  placeholder='Type your task...'
-                  className={`dark:bg-black-velvet h-full text-md outline-none w-full`}
-                ></input>
-              )}
-
-              <Pencil1Icon
-                className={`h-5 w-5 cursor-pointer transition-opacity ${
-                  isOpen ? 'opacity-100' : 'opacity-0'
-                }`}
-                onClick={() => {
-                  task.objectives.length
-                    ? setAddStep((prev) => !prev)
-                    : setOpen((prev) => !prev)
-                }}
-              />
-            </div>
-            <div className='flex flex-col h-full mx-2 mt-1'>
-              <Tree isOpen={isOpen}>
-                {task.objectives.map((obj, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className='text-sm h-full py-1 flex justify-items-center'
-                    >
-                      <input
-                        id={obj.step}
-                        type='checkbox'
-                        name={obj.step}
-                        checked={obj.complete}
-                        onChange={(e) => updateChecked(i, !obj.complete)}
-                        className='styled-checkbox'
-                        tabIndex={-1}
-                      />
-                      <label
-                        {...longPressProps}
-                        id={obj.step}
-                        className='checkbox-custom-label select-none transiton-color'
-                        htmlFor={obj.step}
-                        tabIndex={-1}
+                  <div className='flex flex-row items-center'>
+                    <Priority prio={task.priority} />
+                    {task.content ? (
+                      <span
+                        onClick={() => {
+                          setAddStep(
+                            !(task.objectives.length > 0) ? true : false
+                          ),
+                            setOpen((prev) => !prev)
+                        }}
                       >
-                        {obj.step}
-                      </label>
-                    </div>
-                  )
-                })}
+                        {task.content}
+                        <span
+                          className={`ml-2 ${
+                            (
+                              task.objectives.length && completeObjectives
+                                ? 1
+                                : 0
+                            )
+                              ? `opacity-100`
+                              : 'opacity-0'
+                          }`}
+                        >
+                          {completeObjectives}/{task.objectives.length}
+                        </span>
+                      </span>
+                    ) : (
+                      <input
+                        autoFocus
+                        type='text'
+                        value={text}
+                        onChange={(e) => handleChange(e.target.value)}
+                        onFocus={focusHandler}
+                        onBlur={blurHandler}
+                        placeholder='Type your task...'
+                        className={`dark:bg-black-velvet h-full text-md outline-none w-full`}
+                      ></input>
+                    )}
+                  </div>
 
-                <Tree isOpen={addStep}>
-                  <textarea
-                    tabIndex={-1}
-                    ref={textareaRef}
-                    value={step}
-                    onChange={(e) => handleStep(e.target.value)}
-                    // onFocus={focusHandler}
-                    // onBlur={blurHandler}
-                    placeholder='add step...'
-                    className={`bg-super-silver dark:bg-night-sky h-[28px] p-1 ml-[22px] text-sm outline-none w-[90%] overflow-x-hidden resize-none rounded-md`}
-                    autoComplete='on'
-                    spellCheck='false'
+                  <Pencil1Icon
+                    className={`h-5 w-5 cursor-pointer transition-opacity ${
+                      isOpen ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    onClick={() => {
+                      task.objectives.length
+                        ? setAddStep((prev) => !prev)
+                        : setOpen((prev) => !prev)
+                    }}
                   />
-                </Tree>
-              </Tree>
-            </div>
+                </div>
+                <div className='flex flex-col h-full mx-2 mt-1'>
+                  <Tree isOpen={isOpen}>
+                    {task.objectives.map((obj, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className='text-sm h-full py-1 flex justify-items-center'
+                        >
+                          <input
+                            id={obj.step}
+                            type='checkbox'
+                            name={obj.step}
+                            checked={obj.complete}
+                            onChange={(e) => updateChecked(i, !obj.complete)}
+                            className='styled-checkbox'
+                            tabIndex={-1}
+                          />
+                          <label
+                            {...longPressProps}
+                            id={obj.step}
+                            className='checkbox-custom-label select-none transiton-color'
+                            htmlFor={obj.step}
+                            tabIndex={-1}
+                          >
+                            {obj.step}
+                          </label>
+                        </div>
+                      )
+                    })}
+
+                    <Tree isOpen={addStep}>
+                      <textarea
+                        tabIndex={-1}
+                        ref={textareaRef}
+                        value={step}
+                        onChange={(e) => handleStep(e.target.value)}
+                        // onFocus={focusHandler}
+                        // onBlur={blurHandler}
+                        placeholder='add step...'
+                        className={`bg-super-silver dark:bg-night-sky h-[28px] p-1 ml-[22px] text-sm outline-none w-[90%] overflow-x-hidden resize-none rounded-md`}
+                        autoComplete='on'
+                        spellCheck='false'
+                      />
+                    </Tree>
+                  </Tree>
+                </div>
+              </ContextMenuPrimitive.Trigger>
+            </ContextMenuPrimitive.Root>
           </div>
         )
       )}

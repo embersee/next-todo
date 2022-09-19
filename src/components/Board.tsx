@@ -14,7 +14,7 @@ const Board = ({ data, title }: { data: any; title: string }) => {
   const trpcClient = trpc.useContext()
   const { mutate, error } = trpc.useMutation(['users.change'], {
     onSuccess: () => {
-      trpcClient.invalidateQueries(['users.board'])
+      // trpcClient.invalidateQueries(['users.board']) //board name edit
     },
   })
 
@@ -185,8 +185,6 @@ const Board = ({ data, title }: { data: any; title: string }) => {
       document.removeEventListener('keydown', handleComboKey)
     }
   }, [handleComboKey])
-
-  console.log('render board')
 
   return (
     <div className='flex flex-col justify-center'>

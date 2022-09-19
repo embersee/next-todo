@@ -1,6 +1,6 @@
 import { signOut, useSession } from 'next-auth/react'
 
-import Link from 'next/link'
+import { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/router'
 
 export const Nav = ({ title }: { title: string }) => {
@@ -11,19 +11,22 @@ export const Nav = ({ title }: { title: string }) => {
     <>
       <div className='flex justify-between items-center'>
         <div>
-          <Link href='/'>
-            <button className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-              Home
-            </button>
-          </Link>
+          <button
+            onClick={() => router.push('/')}
+            className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+          >
+            Home
+          </button>
           {status === 'authenticated' && (
-            <Link href='/dashboard'>
-              <button className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-                My Boards
-              </button>
-            </Link>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className='text-md inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+            >
+              My Boards
+            </button>
           )}
         </div>
+        <Toaster />
         <h1 className=' text-3xl'>{title}</h1>
         <div className='flex justify-items-end'>
           {status === 'authenticated' ? (
@@ -39,14 +42,18 @@ export const Nav = ({ title }: { title: string }) => {
           ) : (
             <>
               <button
-                onClick={() => router.push('/sign-up')}
+                onClick={() =>
+                  router.push('/sign-up', undefined, { shallow: true })
+                }
                 className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
               >
                 Sign Up
               </button>
 
               <button
-                onClick={() => router.push('/sign-in')}
+                onClick={() =>
+                  router.push('/sign-in', undefined, { shallow: true })
+                }
                 className='inline-block m-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
               >
                 Sign In

@@ -25,7 +25,7 @@ const Home: NextPage = () => {
         )}
       </div>
 
-      <footer className=''></footer>
+      <footer className=''>{JSON.stringify(session)}</footer>
     </div>
   )
 }

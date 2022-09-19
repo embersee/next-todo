@@ -4,19 +4,54 @@ import Head from 'next/head'
 import Link from 'next/link'
 import type { NextPage } from 'next'
 import { signIn } from 'next-auth/react'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
 const SignIn: NextPage = () => {
+  const [loading, setLoading] = useState(false)
   const { register, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(createUserSchema),
   })
 
-  const onSubmit = useCallback(async (data: SignIn) => {
-    await signIn('credentials', { ...data, callbackUrl: '/dashboard' })
-  }, [])
+  const router = useRouter()
+
+  const onSubmit = useCallback(
+    async (data: SignIn) => {
+      setLoading(true)
+      await signIn('credentials', {
+        ...data,
+        callbackUrl: '/dashboard',
+        redirect: false,
+      }).then((res) => {
+        setLoading(false)
+        if (res?.error) {
+          toast.error('Wrong username or password!', {
+            icon: '🥲',
+            style: {
+              borderRadius: '10px',
+              background: '#F43F5E',
+              color: '#fff',
+            },
+          })
+        } else {
+          router.push('/dashboard')
+          toast.success(`Welcome ${data.username}`, {
+            icon: '👏',
+            style: {
+              borderRadius: '10px',
+              background: '#22C55E', //#1E1E2A
+              color: '#fff',
+            },
+          })
+        }
+      })
+    },
+    [router]
+  )
 
   return (
     <div>
@@ -50,10 +85,11 @@ const SignIn: NextPage = () => {
               />
               <div className='flex justify-between'>
                 <button
+                  disabled={loading}
                   type='submit'
                   className='inline-block mt-2 px-6 py-2 bg-white dark:bg-night-sky font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
                 >
-                  Login
+                  {loading ? 'Loading...' : 'Login'}
                 </button>
               </div>
             </div>

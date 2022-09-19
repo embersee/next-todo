@@ -29,11 +29,13 @@ export const nextAuthOptions: NextAuthOptions = {
           return null
         }
 
-        return {
+        const result = {
           id: user.id,
           email: user.email,
           username: user.username,
         }
+
+        return result
       },
     }),
   ],

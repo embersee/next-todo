@@ -12,7 +12,7 @@ const data = {
     'task-1': {
       id: 'task-1',
       content: 'Take out the garbage',
-      priority: '',
+      priority: 'high',
       label: '',
       objectives: [
         { step: 'get garbage bag', complete: true },
@@ -22,7 +22,7 @@ const data = {
     'task-2': {
       id: 'task-2',
       content: 'Watch my favorite show',
-      priority: '',
+      priority: 'medium',
       label: '',
       objectives: [
         { step: 'plug in the tv', complete: true },
@@ -32,14 +32,14 @@ const data = {
     'task-3': {
       id: 'task-3',
       content: 'Charge my phone',
-      priority: '',
+      priority: 'low',
       label: '',
       objectives: [],
     },
     'task-4': {
       id: 'task-4',
       content: 'Cook dinner',
-      priority: '',
+      priority: 'high',
       label: '',
       objectives: [],
     },
@@ -67,7 +67,6 @@ const data = {
 export const userRouter = createRouter()
   .mutation('signup', {
     input: signUpSchema,
-    // output: createUserOutputSchema,
     resolve: async ({ ctx, input }) => {
       const { username, email, password } = input
 
@@ -90,7 +89,9 @@ export const userRouter = createRouter()
 
       const createBoard = await ctx.prisma.board.create({
         data: {
-          title: `${result.username}'s Board`,
+          title: `${
+            result?.username.charAt(0).toUpperCase() + result?.username.slice(1)
+          }'s Board`,
           authorId: result.id,
           data: data,
         },
@@ -99,7 +100,7 @@ export const userRouter = createRouter()
       return {
         status: 201,
         message: 'Account created successfully',
-        result: result.email,
+        result: { email: result.email, username: result.username },
       }
     },
   })
@@ -119,31 +120,31 @@ export const userRouter = createRouter()
         },
       })
 
-      if (!me) return
-      if (me?.boards.length < 1) {
-        const createData = await ctx.prisma.board.create({
-          data: {
-            title: `${
-              me?.username.charAt(0).toUpperCase() + me?.username.slice(1)
-            }'s Board`,
-            authorId: me?.id,
-            data: data,
-          },
-        })
-        const me2 = await ctx.prisma.user.findUnique({
-          where: {
-            email: ctx.session.user.email,
-          },
-          include: {
-            boards: true,
-          },
-        })
-        return {
-          status: 201,
-          message: 'User GET request successfully',
-          result: me2,
-        }
-      }
+      // if (!me) return
+      // if (me?.boards.length < 1) {
+      //   const createData = await ctx.prisma.board.create({
+      //     data: {
+      //       title: `${
+      //         me?.username.charAt(0).toUpperCase() + me?.username.slice(1)
+      //       }'s Board`,
+      //       authorId: me?.id,
+      //       data: data,
+      //     },
+      //   })
+      //   const me2 = await ctx.prisma.user.findUnique({
+      //     where: {
+      //       email: ctx.session.user.email,
+      //     },
+      //     include: {
+      //       boards: true,
+      //     },
+      //   })
+      //   return {
+      //     status: 201,
+      //     message: 'User GET request successfully',
+      //     result: me2,
+      //   }
+      // }
       return {
         status: 201,
         message: 'User GET request successfully',
@@ -252,11 +253,30 @@ export const userRouter = createRouter()
         data: {
           title: `${
             me?.username.charAt(0).toUpperCase() + me?.username.slice(1)
-          }'s Board ${me.boards.length}`,
+          }'s Board ${me.boards.length !== 0 ? me.boards.length : ''}`,
           authorId: me?.id,
           data: data,
         },
       })
       return createBoard
+    },
+  })
+  .mutation('deleteBoard', {
+    input: z.string(),
+    resolve: async ({ ctx, input }) => {
+      if (!ctx.session?.user?.name)
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User doesnt exist',
+        })
+      const deleteBoard = ctx.prisma.board.deleteMany({
+        where: {
+          author: {
+            username: ctx.session?.user?.name,
+          },
+          title: input,
+        },
+      })
+      return deleteBoard
     },
   })

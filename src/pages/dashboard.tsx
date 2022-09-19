@@ -1,13 +1,17 @@
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+
 import { useEffect, useState } from 'react'
 
 import { BoardTitle } from '../components/BoardTitle'
+import { DashboardContextMenu } from '../components/utils/DashboardContextMenu'
 import { Data } from '../ts/interfaces'
 import FullScreenLoader from '../components/utils/FullscreenLoader'
 import Head from 'next/head'
-import Link from 'next/link'
 import type { NextPage } from 'next'
 import { requireAuth } from '../utils/requireAuth'
+import toast from 'react-hot-toast'
 import { trpc } from '../utils/trpc'
+import { useRouter } from 'next/router'
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} }
@@ -15,12 +19,62 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
 const Dashboard: NextPage = () => {
   const [isBrowser, setIsBrowser] = useState(false)
+  const [contextOpen, setContextOpen] = useState(false)
+  const router = useRouter()
 
   const trpcClient = trpc.useContext()
 
-  const { data, error, isLoading, isFetching } = trpc.useQuery(['users.me'])
+  const { data, error, isLoading, isFetching, refetch } = trpc.useQuery([
+    'users.me',
+  ])
   const { mutate } = trpc.useMutation(['users.createBoard'], {
+    onMutate: () => {
+      toast.loading('Please wait...', {
+        id: 'createBoard',
+        style: {
+          borderRadius: '10px',
+          background: '#1E1E2A', //#1E1E2A
+          color: '#fff',
+          minWidth: '50px',
+        },
+      })
+    },
     onSuccess: () => {
+      toast.success('Board created', {
+        id: 'createBoard',
+        style: {
+          borderRadius: '10px',
+          background: '#1E1E2A', //#22C55E
+          color: '#fff',
+          minWidth: '50px',
+        },
+      })
+      trpcClient.refetchQueries(['users.me'])
+    },
+  })
+
+  const { mutate: deleteMutation } = trpc.useMutation(['users.deleteBoard'], {
+    onMutate: () => {
+      toast.loading('Deleting...', {
+        id: 'deleteBoard',
+        style: {
+          borderRadius: '10px',
+          background: '#1E1E2A', //#1E1E2A
+          color: '#fff',
+          minWidth: '50px',
+        },
+      })
+    },
+    onSuccess: () => {
+      toast.success('Board deleted', {
+        id: 'deleteBoard',
+        style: {
+          borderRadius: '10px',
+          background: '#1E1E2A', //#22C55E
+          color: '#fff',
+          minWidth: '50px',
+        },
+      })
       trpcClient.refetchQueries(['users.me'])
     },
   })
@@ -38,10 +92,12 @@ const Dashboard: NextPage = () => {
     mutate()
   }
 
-  console.log('render dashboard')
+  const deleteBoard = (board: string) => {
+    deleteMutation(board)
+  }
 
   return (
-    <div className='h-screen w-screen'>
+    <div className='h-full w-screen'>
       <Head>
         <title>Create Next App</title>
         <meta name='viewport' content='width=device-width, initial-scale=2' />
@@ -54,42 +110,62 @@ const Dashboard: NextPage = () => {
           My Boards
         </h1>
         <div className='flex justify-center m-2'>
-          {isBrowser &&
-            data.result.boards.map((board, i) => {
-              const boardData = JSON.stringify(board?.data)
-              const boardDataParsed: Data = JSON.parse(boardData)
-              const currentTitle = board.title
-              return (
-                <div
-                  key={i}
-                  className='border-2 rounded-md w-72 mx-10 py-2 flex flex-col justify-center text-center bg-night-sky'
-                >
-                  <BoardTitle currentTitle={currentTitle} textSize='text-xl' />
-                  <h3>
-                    {'Columns: ' + Object.keys(boardDataParsed.columns).length}
-                  </h3>
-                  <h3>
-                    {'Tasks: ' + Object.keys(boardDataParsed.tasks).length}
-                  </h3>
-                  <Link
-                    href={{
-                      pathname: `/boards/${currentTitle}`,
-                    }}
+          <div className='grid grid-cols-4 gap-4'>
+            {isBrowser &&
+              data.result.boards.map((board, i) => {
+                const boardData = JSON.stringify(board?.data)
+                const boardDataParsed: Data = JSON.parse(boardData)
+                const currentTitle = board.title
+                return (
+                  <div
+                    key={i}
+                    className='border-2 rounded-md  py-2 flex flex-col justify-center text-center bg-white dark:bg-night-sky'
                   >
-                    <button className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'>
-                      Open
-                    </button>
-                  </Link>
-                </div>
-              )
-            })}
-          <div className='border-2 rounded-md h-16 flex justify-center hover:border-blue-500 transition duration-250 ease-in-out bg-night-sky'>
-            <button
-              onClick={createBoard}
-              className='text-xl h-full w-full px-10'
-            >
-              Create new board
-            </button>
+                    <ContextMenuPrimitive.Root
+                      onOpenChange={(open) => setContextOpen(open)}
+                    >
+                      <ContextMenuPrimitive.Trigger>
+                        <DashboardContextMenu
+                          boardTitle={currentTitle}
+                          deleteBoard={deleteBoard}
+                        />
+                        <BoardTitle
+                          currentTitle={currentTitle}
+                          textSize='text-xl'
+                        />
+                        <h3>
+                          {'Columns: ' +
+                            Object.keys(boardDataParsed.columns).length}
+                        </h3>
+                        <h3>
+                          {'Tasks: ' +
+                            Object.keys(boardDataParsed.tasks).length}
+                        </h3>
+
+                        <button
+                          onClick={() =>
+                            router.push(`/boards/${currentTitle}`, undefined, {
+                              shallow: true,
+                            })
+                          }
+                          className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-super-silver dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 hover:border-blue-500 transition duration-150 ease-in-out'
+                        >
+                          Open
+                        </button>
+                      </ContextMenuPrimitive.Trigger>
+                    </ContextMenuPrimitive.Root>
+                  </div>
+                )
+              })}
+
+            <div className='border-2 rounded-md h-16 flex justify-center hover:border-blue-500 transition duration-250 ease-in-out bg-white dark:bg-night-sky'>
+              <button
+                onClick={createBoard}
+                className='text-xl h-full w-full px-10'
+              >
+                Create new board
+              </button>
+            </div>
           </div>
         </div>
       </main>

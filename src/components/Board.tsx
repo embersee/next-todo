@@ -10,7 +10,6 @@ import { trpc } from '../utils/trpc'
 
 const Board = ({ data, title }: { data: any; title: string }) => {
   const [state, setState] = useState<Data>(data)
-  const [show, setShow] = useState(false)
   const trpcClient = trpc.useContext()
   const { mutate, error } = trpc.useMutation(['users.change'], {
     onSuccess: () => {
@@ -170,25 +169,25 @@ const Board = ({ data, title }: { data: any; title: string }) => {
     })
   }
 
-  const handleComboKey = useCallback((e: { key: any }) => {
-    if (e.key == 'Meta') {
-      setShow((prev) => !prev)
-    }
-  }, [])
+  // const handleComboKey = useCallback((e: { key: any }) => {
+  //   if (e.key == 'Meta') {
+  //     setShow((prev) => !prev)
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    // attach the event listener for Meta key
-    document.addEventListener('keydown', handleComboKey)
+  // useEffect(() => {
+  //   // attach the event listener for Meta key
+  //   document.addEventListener('keydown', handleComboKey)
 
-    // remove the event listener
-    return () => {
-      document.removeEventListener('keydown', handleComboKey)
-    }
-  }, [handleComboKey])
+  //   // remove the event listener
+  //   return () => {
+  //     document.removeEventListener('keydown', handleComboKey)
+  //   }
+  // }, [handleComboKey])
 
   return (
-    <div className='flex flex-col ml-2'>
-      <Input state={state} setState={setState} show={show} />
+    <div className='flex flex-col mx-2'>
+      <Input state={state} setState={setState} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>
           {({ droppableProps, innerRef, placeholder }) => (
@@ -212,7 +211,7 @@ const Board = ({ data, title }: { data: any; title: string }) => {
               })}
               {placeholder}
 
-              <div className='flex flex-col mb-2 mt-2 mr-2'>
+              <div className='flex flex-col my-2'>
                 {state.columnOrder.length < 5 && (
                   <button
                     onClick={addColumn}

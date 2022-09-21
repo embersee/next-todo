@@ -92,7 +92,36 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   const handleAddTask = (column: string, text: string) => {
     setState((prev) => {
       const index = _.size(prev.tasks)
-      const task = `task-${index + 1}`
+
+      if (index <= 0)
+        return {
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            'task-1': {
+              id: 'task-1',
+              content: text,
+              priority: '',
+              label: '',
+              objectives: [],
+            },
+          },
+          columns: {
+            ...prev.columns,
+            [column]: {
+              id: column,
+              title: prev.columns[column].title,
+              taskIds: [...prev.columns[column].taskIds, 'task-1'],
+            },
+          },
+        }
+
+      const last = _.keys(prev.tasks)
+      const highestTaskIndex = last[index - 1]
+      const lastNum = highestTaskIndex.slice(
+        highestTaskIndex.length === 6 ? -1 : -2
+      )
+      const task = `task-${Number(lastNum) + 1}`
       //TODO: task should equal 'task' + 1 from not the amount of tasks left over but take latest task and add a +1 to the number of task
       //check if there already is a existing new empty task
       const filterEmptyTasks = _.filter(
@@ -337,13 +366,13 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
 
                       <div className='flex flex-row pl-2 mt-2 '>
                         <button
-                          className='border-2 border-transparent p-1 my-2 rounded-md dark:bg-black-velvet hover:border-green-500 transition-colors duration-200'
+                          className='border-2 border-transparent p-1 my-2 rounded-md shadow-md dark:bg-black-velvet hover:border-green-500 transition-colors duration-200'
                           onClick={() => handleAddTask(column.id, '')}
                         >
                           <PlusIcon className='h-5 w-5' />
                         </button>
                         <button
-                          className='border-2 border-transparent p-1 my-2 rounded-md dark:bg-black-velvet ml-2 hover:border-rose-500 transition-colors duration-200'
+                          className='border-2 border-transparent p-1 my-2 rounded-md shadow-md dark:bg-black-velvet ml-2 hover:border-rose-500 transition-colors duration-200'
                           onClick={() => handleDeleteTask(column.id)}
                         >
                           <MinusIcon className='h-5 w-5' />

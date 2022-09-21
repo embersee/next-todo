@@ -108,17 +108,46 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
     setIsBlur(false)
     setState((prev) => {
       const index = _.size(prev.tasks)
-      const taskName = `task-${index}`
+
+      if (index <= 0)
+        return {
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            'task-1': {
+              id: 'task-1',
+              content: text,
+              priority: '',
+              label: '',
+              objectives: [],
+            },
+          },
+          columns: {
+            ...prev.columns,
+            [column]: {
+              id: column,
+              title: prev.columns[column].title,
+              taskIds: [...prev.columns[column].taskIds, 'task-1'],
+            },
+          },
+        }
+
+      const last = _.keys(prev.tasks)
+      const highestTaskIndex = last[index - 1]
+      const lastNum = highestTaskIndex.slice(
+        highestTaskIndex.length === 6 ? -1 : -2
+      )
+      const task = `task-${Number(lastNum)}` //because we are modifying a previously empty content task we remove the +1
 
       return {
         ...prev,
         tasks: {
           ...prev.tasks,
-          [taskName]: {
-            id: taskName, //??
+          [task]: {
+            id: task, //??
             content: text,
-            priority: prev.tasks[taskName].priority,
-            label: prev.tasks[taskName].label,
+            priority: prev.tasks[task].priority,
+            label: prev.tasks[task].label,
             objectives: [],
           },
         },
@@ -127,7 +156,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           [column]: {
             id: column,
             title: prev.columns[column].title,
-            taskIds: [...prev.columns[column].taskIds.slice(0, -1), taskName],
+            taskIds: [...prev.columns[column].taskIds.slice(0, -1), task],
           },
         },
       }
@@ -276,6 +305,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
   }
 
   const deleteTask = () => {
+    //TODO: items added from input and are set to delete error and crash app
     setState((prev) => {
       //get rid of last task in selected column( delete it)
       const taskToDelete = task.id
@@ -335,7 +365,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           <div
             {...draggableProps}
             ref={innerRef}
-            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mt-2 h-auto min-h-[43px] transition-colors duration-300
+            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mt-2 h-auto min-h-[43px] transition-colors duration-300 shadow-md
             ${
               contextOpen
                 ? 'border-blue-400 dark:border-blue-400'

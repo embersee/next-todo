@@ -85,7 +85,8 @@ export const Sidebar = () => {
       <h1 className='text-2xl font-bold text-center'>My Boards</h1>
       {data?.result?.boards.map((board, i) => {
         const currentTitle = board.title
-        const currentBoard = router.query.board == board.title
+        const currentBoard = router.query.board === board.title
+
         return (
           <div key={i}>
             <SidebarItem

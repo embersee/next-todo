@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import Board from '../../components/Board'
+import { BoardSkeleton } from '../../components/BoardSkeleton'
 import { BoardTitle } from '../../components/BoardTitle'
 import FullScreenLoader from '../../components/utils/FullscreenLoader'
 import Head from 'next/head'
@@ -24,12 +25,13 @@ const MyBoard: NextPage = () => {
   const title = router.query.board as string
 
   const { data, error, isLoading, isFetching } = trpc.useQuery([
-    'users.board',
+    'board.board',
     title,
   ])
 
+  // if (isLoading || isFetching) return <BoardSkeleton />
   if (isLoading || isFetching) return <FullScreenLoader />
-  // if (isFetching) return <FullScreenLoader />
+  // if (isFetching) return
 
   if (error) return <>{error.message}</>
 

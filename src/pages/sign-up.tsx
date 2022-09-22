@@ -18,7 +18,7 @@ const SignUp: NextPage = () => {
     resolver: zodResolver(signUpSchema),
   })
 
-  const { mutate, error } = trpc.useMutation(['users.signup'], {
+  const { mutate, error } = trpc.useMutation(['auth.signup'], {
     onError: (error) => {
       toast.error(error.message, {
         icon: '🥲',

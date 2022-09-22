@@ -8,14 +8,29 @@ import Input from './Input'
 import _ from 'lodash'
 import { trpc } from '../utils/trpc'
 
-const Board = ({ data, title }: { data: any; title: string }) => {
+const Board = ({
+  data,
+  title,
+}: // isLoading,
+{
+  data: any
+  title: string
+  // isLoading: boolean
+}) => {
   const [state, setState] = useState<Data>(data)
   const trpcClient = trpc.useContext()
-  const { mutate, error } = trpc.useMutation(['users.change'], {
+  const [isLoading, setisLoading] = useState(true)
+  const { mutate, error } = trpc.useMutation(['board.change'], {
     onSuccess: () => {
       // trpcClient.invalidateQueries(['users.board']) //board name edit
     },
   })
+
+  useEffect(() => {
+    setTimeout(() => {
+      setisLoading(false)
+    }, 200)
+  }, [])
 
   useEffect(() => {
     mutate({ boardTitle: title, state: state })
@@ -186,7 +201,11 @@ const Board = ({ data, title }: { data: any; title: string }) => {
   // }, [handleComboKey])
 
   return (
-    <div className='flex flex-col mx-2'>
+    <div
+      className={`flex flex-col mx-2 transition-opacity duration-500 ${
+        !isLoading ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       <Input state={state} setState={setState} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>

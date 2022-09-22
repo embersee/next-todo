@@ -22,7 +22,7 @@ export const BoardTitle = ({
 
   const trpcClient = trpc.useContext()
 
-  const { mutate } = trpc.useMutation(['users.titleChange'], {
+  const { mutate } = trpc.useMutation(['board.titleChange'], {
     onMutate: () => {
       toast.loading('Please wait...', {
         id: 'titleChange',
@@ -49,7 +49,7 @@ export const BoardTitle = ({
         trpcClient.refetchQueries(['users.me'])
       } else {
         trpcClient.refetchQueries(['users.me'])
-        trpcClient.refetchQueries(['users.board'])
+        trpcClient.refetchQueries(['board.board'])
         router.push(`/boards/${newBoardTitle}`)
       }
     },

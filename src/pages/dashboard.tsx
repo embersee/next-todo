@@ -27,7 +27,7 @@ const Dashboard: NextPage = () => {
   const { data, error, isLoading, isFetching, refetch } = trpc.useQuery([
     'users.me',
   ])
-  const { mutate } = trpc.useMutation(['users.createBoard'], {
+  const { mutate } = trpc.useMutation(['board.createBoard'], {
     onMutate: () => {
       toast.loading('Please wait...', {
         id: 'createBoard',
@@ -53,7 +53,7 @@ const Dashboard: NextPage = () => {
     },
   })
 
-  const { mutate: deleteMutation } = trpc.useMutation(['users.deleteBoard'], {
+  const { mutate: deleteMutation } = trpc.useMutation(['board.deleteBoard'], {
     onMutate: () => {
       toast.loading('Deleting...', {
         id: 'deleteBoard',

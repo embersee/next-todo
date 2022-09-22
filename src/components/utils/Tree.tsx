@@ -1,4 +1,4 @@
-import { a, animated, useSpring } from '@react-spring/web'
+import { a, animated, config, useSpring } from '@react-spring/web'
 
 import { ReactNode } from 'react'
 import styled from 'styled-components'
@@ -21,11 +21,12 @@ export const Tree = ({ isOpen, children }: TreeProps) => {
   const previous = usePrevious(isOpen)
   const [ref, { height: viewHeight }] = useMeasure()
   const { height, opacity, y } = useSpring({
-    from: { height: 0, opacity: 0, y: 0 },
+    config: config.default,
+    from: { position: 'absolute', height: 0, opacity: 0, y: 0 },
     to: {
       height: isOpen ? viewHeight : 0,
       opacity: isOpen ? 1 : 0,
-      y: isOpen ? 0 : 20,
+      y: isOpen ? 0 : 10,
     },
   })
   return (

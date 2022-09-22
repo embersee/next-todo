@@ -4,6 +4,7 @@ import { ArrowRightIcon, PlusIcon } from '@radix-ui/react-icons'
 
 import { BoardTitle } from './BoardTitle'
 import { DashboardContextMenu } from './utils/DashboardContextMenu'
+import FullScreenLoader from './utils/FullscreenLoader'
 import { SidebarItem } from './SidebarItem'
 import toast from 'react-hot-toast'
 import { trpc } from '../utils/trpc'
@@ -20,7 +21,7 @@ export const Sidebar = () => {
 
   const trpcClient = trpc.useContext()
 
-  const { mutate } = trpc.useMutation(['users.createBoard'], {
+  const { mutate } = trpc.useMutation(['board.createBoard'], {
     onMutate: () => {
       toast.loading('Creating new board...', {
         id: 'createBoard',
@@ -46,7 +47,7 @@ export const Sidebar = () => {
     },
   })
 
-  const { mutate: deleteMutation } = trpc.useMutation(['users.deleteBoard'], {
+  const { mutate: deleteMutation } = trpc.useMutation(['board.deleteBoard'], {
     onMutate: () => {
       toast.loading('Deleting...', {
         id: 'deleteBoard',
@@ -80,8 +81,25 @@ export const Sidebar = () => {
     deleteMutation(board)
   }
 
+  if (isLoading || isFetching)
+    return (
+      <div className=' bg-absence w-[304px]'>
+        <h1 className='text-2xl font-bold text-center'>My Boards</h1>
+        {/* TODO: add loading skeleton on SidebarItem */}
+        <div className='flex flex-col h-screen justify-center items-center relative -left-4'>
+          <FullScreenLoader />
+        </div>
+        {/* <div className='animate-pulse border-2 border-transparent rounded-md m-2 py-2 h-16 w-72 bg-white dark:bg-black-velvet'></div>
+        <div className='animate-pulse border-2 border-transparent rounded-md m-2 py-2 h-16 w-72 bg-white dark:bg-black-velvet'></div>
+        <div className='animate-pulse border-2 border-transparent rounded-md m-2 py-2 h-16 w-72 bg-white dark:bg-black-velvet'></div>
+        <div className='flex justify-center '>
+          <div className='animate-pulse w-12 h-12 border-2 border-transparent rounded-md dark:bg-black-velvet'></div>
+        </div> */}
+      </div>
+    )
+
   return (
-    <div className=' bg-absence'>
+    <div className=' bg-absence w-[304px]'>
       <h1 className='text-2xl font-bold text-center'>My Boards</h1>
       {data?.result?.boards.map((board, i) => {
         const currentTitle = board.title

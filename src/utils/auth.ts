@@ -1,5 +1,6 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { NextAuthOptions } from 'next-auth'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { createUserSchema } from '../schema/user.schema'
 import { prisma } from './prisma'
 import { verify } from 'argon2'
@@ -8,6 +9,7 @@ export const nextAuthOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -52,11 +54,10 @@ export const nextAuthOptions: NextAuthOptions = {
 
       return token
     },
-    session: async ({ session, token }) => {
-      if (token) {
-        session.id = token.id
+    session({ session, token }) {
+      if (session.user && token) {
+        session.user.name = token.name
       }
-
       return session
     },
   },

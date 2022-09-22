@@ -22,7 +22,7 @@ export const Layout = ({ children, title }: Props) => {
             e.preventDefault()
             return false
           }}
-          className='flex flex-col h-[96vh] flex-grow rounded-md dark:bg-black-velvet/50'
+          className='flex flex-col h-[96vh] flex-grow rounded-md dark:bg-black-velvet/50 overflow-scroll'
         >
           {children}
         </div>

@@ -1,7 +1,7 @@
 import * as trpcNext from '@trpc/server/adapters/next'
 
 import { appRouter } from '../../../server/route/app.router'
-import { createContext } from '../../../server/createContext'
+import { createContext } from '../../../server/context'
 import { withCors } from '../../../utils/cors'
 
 export default withCors(

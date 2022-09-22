@@ -10,9 +10,10 @@ const Input = ({ state, setState }: InputProps) => {
 
   const [error, setError] = useState(false)
   const [colError, setColError] = useState(false)
-
-  const [selectColumn, setSelectColumn] = React.useState('')
-  const [selectPriority, setSelectPriority] = React.useState('')
+  const [selectColumn, setSelectColumn] = React.useState(
+    `${state.columns[state.columnOrder[0]].title}`
+  )
+  const [selectPriority, setSelectPriority] = React.useState('Low')
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setText(e.currentTarget.value)
@@ -130,6 +131,7 @@ const Input = ({ state, setState }: InputProps) => {
       <SelectPriority value={selectPriority} setValue={setSelectPriority} />
       <SelectColumn
         columns={state.columns}
+        columnOrder={state.columnOrder}
         value={selectColumn}
         setValue={setSelectColumn}
         error={colError}
@@ -149,7 +151,7 @@ const Input = ({ state, setState }: InputProps) => {
         onClick={handleClick}
         disabled={isDisabled}
         // onClick={() => console.log(JSON.stringify(state, undefined, 4))}
-        className='inline-block my-2 px-6 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-green-500 transition duration-150 ease-in-out'
+        className=' inline-block my-2 px-6 py-2 bg-white dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-green-500 transition duration-150 ease-in-out'
       >
         add
       </button>

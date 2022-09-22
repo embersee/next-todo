@@ -24,7 +24,7 @@ export const SidebarItem = ({
     <ContextMenuPrimitive.Root onOpenChange={(open) => setContextOpen(open)}>
       <ContextMenuPrimitive.Trigger>
         <div
-          className={`border-2 border-transparent rounded-md m-2 py-2 w-80 flex justify-between items-center text-center bg-white dark:bg-black-velvet transition-colors ${
+          className={`border-2 border-transparent rounded-md m-2 py-2 w-72 flex justify-between items-center text-center bg-white dark:bg-black-velvet transition-colors ${
             currentBoard && 'border-blue-500'
           } ${contextOpen && 'border-blue-500 dark:border-blue-500'}`}
         >

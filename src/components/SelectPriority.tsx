@@ -10,9 +10,24 @@ type Props = {
 
 const SelectPriority = ({ value, setValue }: Props) => {
   return (
-    <SelectPrimitive.Root onValueChange={setValue}>
+    <SelectPrimitive.Root
+      value={value}
+      onValueChange={setValue}
+      defaultValue={value}
+    >
       <SelectPrimitive.SelectTrigger asChild aria-label={value}>
         <div className='inline-flex select-none items-center justify-center rounded-md border-2 border-transparent shadow-md px-6 py-2 text-sm font-medium bg-super-silver hover:bg-gray-50 dark:bg-black-velvet dark:text-gray-100 dark:hover:bg-absence/50 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 '>
+          <div
+            className={`h-[20px] w-1 ${
+              value === 'High'
+                ? 'bg-rose-500'
+                : value === 'Medium'
+                ? 'bg-yellow-500'
+                : value === 'Low'
+                ? 'bg-green-500'
+                : ''
+            } rounded-md mr-2`}
+          ></div>
           <SelectPrimitive.SelectValue placeholder='Priority' />
           <SelectPrimitive.Icon className='ml-1'>
             <ChevronDownIcon />

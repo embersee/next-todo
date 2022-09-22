@@ -14,9 +14,15 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   const [title, setTitle] = useState('')
   const [isFocus, setIsFocus] = useState(false)
   const [isBlur, setIsBlur] = useState(false)
-  const [isOpen, setOpen] = useState(true)
+  const [isOpen, setOpen] = useState(false)
   const [renameColumns, setRenameColumns] = useState(false)
   const [contextOpen, setContextOpen] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setOpen(true)
+    }, 600)
+  }, [])
 
   useEffect(() => {
     if (title === '') return

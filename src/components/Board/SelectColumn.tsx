@@ -3,7 +3,7 @@ import * as SelectPrimitive from '@radix-ui/react-select'
 import { CheckIcon, ChevronDownIcon } from '@radix-ui/react-icons'
 import React, { Dispatch, SetStateAction } from 'react'
 
-import { Column } from '../ts/interfaces'
+import { Column } from '../../ts/interfaces'
 
 type Props = {
   columns: { [key: string]: Column }

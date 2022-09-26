@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { InputProps } from '../ts/interfaces'
+import { InputProps } from '../../ts/interfaces'
 import SelectColumn from './SelectColumn'
 import SelectPriority from './SelectPriority'
 import _ from 'lodash'

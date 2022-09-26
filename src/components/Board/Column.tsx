@@ -4,10 +4,11 @@ import { ChevronDownIcon, MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { useEffect, useState } from 'react'
 
-import { ColumnContextMenu } from './utils/ColumnContextMenu'
-import { ColumnProps } from '../ts/interfaces'
+import { ColumnContextMenu } from '../utils/ColumnContextMenu'
+import { ColumnProps } from '../../ts/interfaces'
 import Task from './Task'
-import { Tree } from './utils/Tree'
+import Tooltip from '../utils/Tooltip'
+import { Tree } from '../utils/Tree'
 import _ from 'lodash'
 
 const Column = ({ column, tasks, index, setState }: ColumnProps) => {
@@ -377,6 +378,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                         >
                           <PlusIcon className='h-5 w-5' />
                         </button>
+
                         <button
                           className='border-2 border-transparent p-1 my-2 rounded-md shadow-md dark:bg-black-velvet ml-2 hover:border-rose-500 transition-colors duration-200'
                           onClick={() => handleDeleteTask(column.id)}

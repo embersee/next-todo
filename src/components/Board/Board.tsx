@@ -3,10 +3,11 @@ import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import React, { useCallback, useEffect, useState } from 'react'
 
 import Column from './Column'
-import { Data } from '../ts/interfaces'
+import { Data } from '../../ts/interfaces'
 import Input from './Input'
+import Tooltip from '../utils/Tooltip'
 import _ from 'lodash'
-import { trpc } from '../utils/trpc'
+import { trpc } from '../../utils/trpc'
 
 const Board = ({
   data,
@@ -232,20 +233,24 @@ const Board = ({
 
               <div className='flex flex-col my-2'>
                 {state.columnOrder.length < 5 && (
-                  <button
-                    onClick={addColumn}
-                    className='border-2 bg-white dark:bg-black-velvet dark:border-transparent p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
-                  >
-                    <PlusIcon className='h-5 w-5' />
-                  </button>
+                  <Tooltip tip='Add Columns'>
+                    <button
+                      onClick={addColumn}
+                      className='border-2 bg-white dark:bg-black-velvet dark:border-transparent p-1 mb-2 rounded-md hover:border-green-500 transition-colors duration-200'
+                    >
+                      <PlusIcon className='h-5 w-5' />
+                    </button>
+                  </Tooltip>
                 )}
                 {state.columnOrder.length > 0 && (
-                  <button
-                    onClick={deleteColumn}
-                    className='border-2 bg-white dark:bg-black-velvet dark:border-transparent p-1 mb-2 rounded-md hover:border-rose-500 transition-colors duration-200'
-                  >
-                    <MinusIcon className='h-5 w-5' />
-                  </button>
+                  <Tooltip tip='Delete Columns'>
+                    <button
+                      onClick={deleteColumn}
+                      className='border-2 bg-white dark:bg-black-velvet dark:border-transparent p-1 mb-2 rounded-md hover:border-rose-500 transition-colors duration-200'
+                    >
+                      <MinusIcon className='h-5 w-5' />
+                    </button>
+                  </Tooltip>
                 )}
               </div>
             </div>

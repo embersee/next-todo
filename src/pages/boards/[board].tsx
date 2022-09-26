@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 
-import Board from '../../components/Board'
-import { BoardSkeleton } from '../../components/BoardSkeleton'
-import { BoardTitle } from '../../components/BoardTitle'
+import Board from '../../components/Board/Board'
+import { BoardLayout } from '../../components/Layout/BoardLayout'
+import { BoardTitle } from '../../components/Board/BoardTitle'
 import FullScreenLoader from '../../components/utils/FullscreenLoader'
 import Head from 'next/head'
-import type { NextPage } from 'next'
+import { Layout } from '../../components/Layout/Layout'
+import type { NextPageWithLayout } from '../_app'
 import { requireAuth } from '../../utils/requireAuth'
 import { trpc } from '../../utils/trpc'
 import { useRouter } from 'next/router'
@@ -14,7 +15,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} }
 })
 
-const MyBoard: NextPage = () => {
+const MyBoard: NextPageWithLayout = () => {
   const [isBrowser, setIsBrowser] = useState(false)
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const MyBoard: NextPage = () => {
   if (error) return <>{error.message}</>
 
   return (
-    <div className='h-full w-full'>
+    <div className=''>
       <Head>
         <title>{title}</title>
         <meta name='viewport' content='width=device-width, initial-scale=2' />
@@ -60,4 +61,13 @@ const MyBoard: NextPage = () => {
     </div>
   )
 }
+
+MyBoard.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      <BoardLayout>{page}</BoardLayout>
+    </Layout>
+  )
+}
+
 export default MyBoard

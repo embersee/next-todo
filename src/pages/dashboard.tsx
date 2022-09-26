@@ -1,13 +1,15 @@
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 
-import { useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 
-import { BoardTitle } from '../components/BoardTitle'
+import { BoardTitle } from '../components/Board/BoardTitle'
 import { DashboardContextMenu } from '../components/utils/DashboardContextMenu'
 import { Data } from '../ts/interfaces'
 import FullScreenLoader from '../components/utils/FullscreenLoader'
 import Head from 'next/head'
-import type { NextPage } from 'next'
+import { Layout } from '../components/Layout/Layout'
+import { NextPageWithLayout } from './_app'
+import { PlusIcon } from '@radix-ui/react-icons'
 import { requireAuth } from '../utils/requireAuth'
 import toast from 'react-hot-toast'
 import { trpc } from '../utils/trpc'
@@ -17,7 +19,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} }
 })
 
-const Dashboard: NextPage = () => {
+const Dashboard: NextPageWithLayout = () => {
   const [isBrowser, setIsBrowser] = useState(false)
   const [contextOpen, setContextOpen] = useState(false)
   const router = useRouter()
@@ -85,7 +87,7 @@ const Dashboard: NextPage = () => {
 
   if (!data?.result) return null
 
-  if (isLoading) return <FullScreenLoader />
+  // if (isLoading || isFetching) return <FullScreenLoader />
   // if (isFetching) return <FullScreenLoader />
 
   const createBoard = () => {
@@ -107,72 +109,88 @@ const Dashboard: NextPage = () => {
 
       <main className='flex flex-col justify-center'>
         <h1 className='text-3xl font-bold absolute top-2 my-[2px] left-1/2 transform -translate-x-1/2 '>
-          My Boards
+          Dashboard
         </h1>
-        <div className='flex justify-center m-2'>
-          <div className='grid grid-cols-4 gap-4'>
-            {isBrowser &&
-              data.result.boards.map((board, i) => {
-                const boardData = JSON.stringify(board?.data)
-                const boardDataParsed: Data = JSON.parse(boardData)
-                const currentTitle = board.title
-                return (
-                  <div
-                    key={i}
-                    className='border-2 border-transparent rounded-md  py-2 flex flex-col justify-center text-center bg-white dark:bg-night-sky'
-                  >
-                    <ContextMenuPrimitive.Root
-                      onOpenChange={(open) => setContextOpen(open)}
-                    >
-                      <ContextMenuPrimitive.Trigger>
-                        <DashboardContextMenu
-                          boardTitle={currentTitle}
-                          deleteBoard={deleteBoard}
-                        />
-                        <BoardTitle
-                          currentTitle={currentTitle}
-                          textSize='text-xl'
-                        />
-                        <h3>
-                          {'Columns: ' +
-                            Object.keys(boardDataParsed.columns).length}
-                        </h3>
-                        <h3>
-                          {'Tasks: ' +
-                            Object.keys(boardDataParsed.tasks).length}
-                        </h3>
 
-                        <button
-                          onClick={() =>
-                            router.push(`/boards/${currentTitle}`, undefined, {
-                              shallow: true,
-                            })
-                          }
-                          className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-super-silver dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
-                        >
-                          Open
-                        </button>
-                      </ContextMenuPrimitive.Trigger>
-                    </ContextMenuPrimitive.Root>
-                  </div>
-                )
-              })}
-
-            <div className='border-2 border-transparent rounded-md h-16 flex justify-center hover:border-blue-500 transition duration-250 ease-in-out bg-white dark:bg-night-sky'>
+        <fieldset className='border-2 p-2 rounded-xl flex m-2 h-auto w-auto mx-auto'>
+          <legend className='px-4 text-xl'>
+            <div className='flex items-center gap-2'>
+              <p>My Boards</p>
               <button
                 onClick={createBoard}
-                className='text-xl h-full w-full px-10'
+                className='border-2 rounded-md border-transparent hover:border-green-500'
               >
-                Create new board
+                <PlusIcon className='h-6 w-6' />
               </button>
             </div>
-          </div>
-        </div>
+          </legend>
+          {isLoading ? (
+            <FullScreenLoader />
+          ) : (
+            <div className='grid grid-cols-4 gap-4 m-2'>
+              {isBrowser &&
+                data.result.boards.map((board, i) => {
+                  const boardData = JSON.stringify(board?.data)
+                  const boardDataParsed: Data = JSON.parse(boardData)
+                  const currentTitle = board.title
+
+                  return (
+                    <div
+                      key={i}
+                      className='border-2 border-transparent rounded-md  py-2 flex flex-col justify-center text-center bg-white dark:bg-night-sky'
+                    >
+                      <ContextMenuPrimitive.Root
+                        onOpenChange={(open) => setContextOpen(open)}
+                      >
+                        <ContextMenuPrimitive.Trigger>
+                          <DashboardContextMenu
+                            boardTitle={currentTitle}
+                            deleteBoard={deleteBoard}
+                          />
+                          <BoardTitle
+                            currentTitle={currentTitle}
+                            textSize='text-xl'
+                          />
+                          <h3>
+                            {'Columns: ' +
+                              Object.keys(boardDataParsed.columns).length}
+                          </h3>
+                          <h3>
+                            {'Tasks: ' +
+                              Object.keys(boardDataParsed.tasks).length}
+                          </h3>
+
+                          <button
+                            onClick={() =>
+                              router.push(
+                                `/boards/${currentTitle}`,
+                                undefined,
+                                {
+                                  shallow: true,
+                                }
+                              )
+                            }
+                            className='flex items-center text-center mx-auto my-2 px-4 py-2 bg-super-silver dark:bg-black-velvet font-medium text-md leading-tight rounded-md shadow-md border-2 border-transparent hover:border-blue-500 transition duration-150 ease-in-out'
+                          >
+                            Open
+                          </button>
+                        </ContextMenuPrimitive.Trigger>
+                      </ContextMenuPrimitive.Root>
+                    </div>
+                  )
+                })}
+            </div>
+          )}
+        </fieldset>
       </main>
 
       <footer></footer>
     </div>
   )
+}
+
+Dashboard.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
 }
 
 export default Dashboard

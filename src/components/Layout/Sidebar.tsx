@@ -2,12 +2,12 @@ import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 
 import { ArrowRightIcon, PlusIcon } from '@radix-ui/react-icons'
 
-import { BoardTitle } from './BoardTitle'
-import { DashboardContextMenu } from './utils/DashboardContextMenu'
-import FullScreenLoader from './utils/FullscreenLoader'
+import { BoardTitle } from '../Board/BoardTitle'
+import { DashboardContextMenu } from '../utils/DashboardContextMenu'
+import FullScreenLoader from '../utils/FullscreenLoader'
 import { SidebarItem } from './SidebarItem'
 import toast from 'react-hot-toast'
-import { trpc } from '../utils/trpc'
+import { trpc } from '../../utils/trpc'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 

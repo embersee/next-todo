@@ -2,8 +2,8 @@ import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 
 import { ArrowRightIcon, PlusIcon } from '@radix-ui/react-icons'
 
-import { BoardTitle } from './BoardTitle'
-import { DashboardContextMenu } from './utils/DashboardContextMenu'
+import { BoardTitle } from '../Board/BoardTitle'
+import { DashboardContextMenu } from '../utils/DashboardContextMenu'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 

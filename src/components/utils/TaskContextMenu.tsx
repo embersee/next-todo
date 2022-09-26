@@ -68,6 +68,13 @@ export const TaskContextMenu = ({
                 <div className='h-[16px] w-1 bg-green-500 rounded-md mr-2'></div>
                 <span>Low</span>
               </ContextMenuPrimitive.Item>
+              <ContextMenuPrimitive.Item
+                onClick={() => givePriority({ prio: '' })}
+                className='flex cursor-default select-none items-center rounded-md px-2 py-2 text-xs outline-none  focus:bg-super-silver  dark:focus:bg-night-sky/75'
+              >
+                <div className='h-[16px] w-1 rounded-md mr-2'></div>
+                <span>None</span>
+              </ContextMenuPrimitive.Item>
             </ContextMenuPrimitive.SubContent>
           </ContextMenuPrimitive.Portal>
         </ContextMenuPrimitive.Sub>

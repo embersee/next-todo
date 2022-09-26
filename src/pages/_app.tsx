@@ -1,20 +1,36 @@
 import '../styles/globals.css'
 
+import { ReactElement, ReactNode } from 'react'
+
 import type { AppProps } from 'next/app'
 import { AppRouter } from '../server/route/app.router'
-import { Layout } from '../components/Layout'
+import { NextPage } from 'next'
+import { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
+import { Toaster } from 'react-hot-toast'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
 import superjson from 'superjson'
 import { withTRPC } from '@trpc/next'
 
-function MyApp({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps<{ session: Session }> & {
+  Component: NextPageWithLayout
+}
+
+//rollback to next@12.2 if error here
+function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page)
   return (
-    <SessionProvider session={pageProps.session}>
-      <Layout title=''>
-        <Component {...pageProps} />
-      </Layout>
+    <SessionProvider session={session}>
+      <Toaster />
+      {getLayout(<Component {...pageProps} />)}
     </SessionProvider>
   )
 }
@@ -22,7 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 export default withTRPC<AppRouter>({
   config({ ctx }) {
     const url = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`
+      ? `https://next-todo-silk-one.vercel.app/api/trpc`
       : 'http://localhost:3000/api/trpc'
 
     const links = [

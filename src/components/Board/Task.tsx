@@ -3,14 +3,13 @@ import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 import { Draggable, DraggableStateSnapshot } from 'react-beautiful-dnd'
 import { useEffect, useRef, useState } from 'react'
 
-import { Pencil1Icon } from '@radix-ui/react-icons'
 import { Priority } from './Priority'
-import { TaskContextMenu } from './utils/TaskContextMenu'
-import { TaskProps } from '../ts/interfaces'
-import { Tree } from './utils/Tree'
+import { TaskContextMenu } from '../utils/TaskContextMenu'
+import { TaskProps } from '../../ts/interfaces'
+import { Tree } from '../utils/Tree'
 import _ from 'lodash'
-import useDraggableInPortal from './utils/Portal'
-import useLongPress from './utils/useLongPress'
+import useDraggableInPortal from '../utils/Portal'
+import useLongPress from '../utils/useLongPress'
 
 const Task = ({ task, index, setState, column }: TaskProps) => {
   const [isFocus, setIsFocus] = useState(false)
@@ -305,7 +304,6 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
   }
 
   const deleteTask = () => {
-    //TODO: items added from input and are set to delete error and crash app
     setState((prev) => {
       //get rid of last task in selected column( delete it)
       const taskToDelete = task.id
@@ -390,10 +388,12 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
 
                 <div
                   {...dragHandleProps}
-                  className='flex flex-row justify-between items-center select-none cursor-pointer h-auto leading-normal'
+                  className='flex flex-row items-center select-none cursor-pointer h-auto leading-normal'
                 >
-                  <div className='flex flex-row items-center'>
+                  <div className='flex-grow-0 '>
                     <Priority prio={task.priority} />
+                  </div>
+                  <div className='flex flex-row items-center w-full'>
                     {task.content ? (
                       <span
                         onClick={() => {
@@ -431,17 +431,6 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
                       ></input>
                     )}
                   </div>
-
-                  <Pencil1Icon
-                    className={`h-5 w-5 cursor-pointer transition-opacity ${
-                      isOpen ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    onClick={() => {
-                      task.objectives.length
-                        ? setAddStep((prev) => !prev)
-                        : setOpen((prev) => !prev)
-                    }}
-                  />
                 </div>
                 <div className='flex flex-col h-full mx-2 mt-1'>
                   <Tree isOpen={isOpen}>

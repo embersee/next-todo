@@ -1,9 +1,12 @@
 import Head from 'next/head'
+import { Layout } from '../components/Layout/Layout'
 import Link from 'next/link'
 import type { NextPage } from 'next'
+import { NextPageWithLayout } from './_app'
+import { ReactElement } from 'react'
 import { useSession } from 'next-auth/react'
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const { data: session, status } = useSession()
   return (
     <div className='h-screen w-screen'>
@@ -28,6 +31,10 @@ const Home: NextPage = () => {
       <footer className=''>{JSON.stringify(session)}</footer>
     </div>
   )
+}
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
 }
 
 export default Home

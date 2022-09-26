@@ -1,6 +1,6 @@
 import { Pencil1Icon } from '@radix-ui/react-icons'
 import toast from 'react-hot-toast'
-import { trpc } from '../utils/trpc'
+import { trpc } from '../../utils/trpc'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 

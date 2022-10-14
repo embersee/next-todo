@@ -1,10 +1,5 @@
-import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
-
-import { ArrowRightIcon, PlusIcon } from '@radix-ui/react-icons'
-
-import { BoardTitle } from '../Board/BoardTitle'
-import { DashboardContextMenu } from '../utils/DashboardContextMenu'
 import FullScreenLoader from '../utils/FullscreenLoader'
+import { PlusIcon } from '@radix-ui/react-icons'
 import { SidebarItem } from './SidebarItem'
 import toast from 'react-hot-toast'
 import { trpc } from '../../utils/trpc'
@@ -12,7 +7,6 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 export const Sidebar = () => {
-  const [contextOpen, setContextOpen] = useState(false)
   const { data, error, isLoading, isFetching, refetch } = trpc.useQuery([
     'users.me',
   ])
@@ -83,10 +77,10 @@ export const Sidebar = () => {
 
   if (isLoading || isFetching)
     return (
-      <div className=' bg-absence w-[304px]'>
-        <h1 className='text-2xl font-bold text-center'>My Boards</h1>
+      <div className=' bg-absence w-[230px]'>
+        <h1 className='text-xl font-bold text-center'>My Boards</h1>
         {/* TODO: add loading skeleton on SidebarItem */}
-        <div className='flex flex-col h-screen justify-center items-center relative -left-4'>
+        <div className='flex flex-col h-full justify-center items-center relative -left-4'>
           <FullScreenLoader />
         </div>
         {/* <div className='animate-pulse border-2 border-transparent rounded-md m-2 py-2 h-16 w-72 bg-white dark:bg-black-velvet'></div>
@@ -99,8 +93,8 @@ export const Sidebar = () => {
     )
 
   return (
-    <div className=' bg-absence w-[304px]'>
-      <h1 className='text-2xl font-bold text-center'>My Boards</h1>
+    <div className='bg-absence w-[230px] flex-grow-0 flex-shrink-0'>
+      <h1 className='text-xl font-bold text-center '>My Boards</h1>
       {data?.result?.boards.map((board, i) => {
         const currentTitle = board.title
         const currentBoard = router.query.board === board.title
@@ -118,9 +112,9 @@ export const Sidebar = () => {
       <div className='flex justify-center '>
         <button
           onClick={createBoard}
-          className='text-xl w-12 h-12 flex justify-center items-center border-2 border-transparent rounded-md dark:bg-black-velvet hover:border-green-500 transition-colors'
+          className='text-lg p-1 flex justify-center items-center border-2 border-transparent rounded-md dark:bg-black-velvet hover:border-green-500 transition-colors'
         >
-          <PlusIcon className='h-6 w-6' />
+          <PlusIcon className='h-5 w-5' />
         </button>
       </div>
     </div>

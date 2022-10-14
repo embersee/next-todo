@@ -363,7 +363,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
           <div
             {...draggableProps}
             ref={innerRef}
-            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mt-2 h-auto min-h-[43px] transition-colors duration-300 shadow-md
+            className={`bg-white dark:bg-black-velvet border-2 p-2 pb-1 rounded-md mb-2 h-auto min-h-[43px] transition-colors duration-300 shadow-md
             ${
               contextOpen
                 ? 'border-blue-400 dark:border-blue-400'
@@ -388,7 +388,7 @@ const Task = ({ task, index, setState, column }: TaskProps) => {
 
                 <div
                   {...dragHandleProps}
-                  className='flex flex-row items-center select-none cursor-pointer h-auto leading-normal'
+                  className='flex flex-row select-none cursor-pointer h-auto leading-normal'
                 >
                   <div className='flex-grow-0 '>
                     <Priority prio={task.priority} />

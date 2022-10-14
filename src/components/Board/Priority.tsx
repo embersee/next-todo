@@ -14,5 +14,7 @@ export const Priority = ({ prio }: { prio: string }) => {
       colour = ''
       break
   }
-  return <div className={`h-[28px] w-1 ${colour} rounded-md mr-2`}></div>
+  return (
+    <div className={`h-[28px] w-1 ${colour} rounded-md mr-2 flex-grow-0`}></div>
+  )
 }

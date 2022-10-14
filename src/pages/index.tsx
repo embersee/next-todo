@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react'
 const Home: NextPageWithLayout = () => {
   const { data: session, status } = useSession()
   return (
-    <div className='h-screen w-screen'>
+    <>
       <Head>
         <title>Create Next App</title>
         <meta name='viewport' content='width=device-width, initial-scale=2' />
@@ -29,7 +29,7 @@ const Home: NextPageWithLayout = () => {
       </div>
 
       <footer className=''>{JSON.stringify(session)}</footer>
-    </div>
+    </>
   )
 }
 

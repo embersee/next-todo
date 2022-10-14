@@ -124,7 +124,7 @@ const Input = ({ state, setState }: InputProps) => {
 
   return (
     <div
-      className={`border-2 border-transparent rounded-md dark:bg-night-sky bg-white flex justify-center items-center w-full px-2 mt-2 transition-color ${
+      className={`border-2 border-transparent rounded-xl dark:bg-night-sky bg-white flex justify-center items-center w-full px-2 mt-2 transition-color ${
         error && 'border-rose-500'
       } `}
     >

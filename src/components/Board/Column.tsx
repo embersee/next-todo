@@ -292,7 +292,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         <div
           {...draggableProps}
           ref={innerRef}
-          className={`w-full border-2 bg-white dark:bg-night-sky rounded-md my-2 mr-2 flex flex-col max-w-s h-fit transition-colors ${
+          className={`w-full border-2 bg-white dark:bg-night-sky rounded-xl my-2 mr-2 flex flex-col max-w-s h-fit transition-colors ${
             isDragging
               ? 'border-blue-600 dark:border-blue-600'
               : ' border-transparent'
@@ -311,35 +311,48 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
               />
               <div
                 {...dragHandleProps}
-                className='box-border flex flex-row justify-start items-center m-2'
+                className='box-border flex items-center m-2'
               >
-                <ChevronDownIcon
-                  className={`h-6 w-6 shrink-0 cursor-pointer transition-transform duration-300 ${
-                    isOpen && '-rotate-90'
-                  }`}
-                  onClick={() => setOpen(!isOpen)}
-                />
                 {column.title === '' ? (
-                  <input
-                    autoFocus
-                    type='text'
-                    className={`dark:bg-night-sky text-2xl font-bold w-full outline-none pl-1 transition-colors duration-300  ${
-                      isFocus
-                        ? 'border-2 rounded-md border-orange-500'
-                        : isBlur
-                        ? 'border-2 rounded-md border-rose-500'
-                        : ''
-                    }`}
-                    value={title}
-                    onChange={(e) => titleHandler(e.target.value)}
-                    onFocus={focusHandler}
-                    onBlur={blurHandler}
-                    placeholder='Type column name...'
-                  />
+                  <div className='border-b-2 border-transparent'>
+                    <input
+                      autoFocus
+                      type='text'
+                      className={`dark:bg-night-sky text-xl font-bold w-full outline-none pl-1 transition-colors duration-300 ${
+                        isFocus
+                          ? 'border-2 rounded-md border-orange-500'
+                          : isBlur
+                          ? 'border-2 rounded-md border-rose-500'
+                          : ''
+                      }`}
+                      value={title}
+                      onChange={(e) => titleHandler(e.target.value)}
+                      onFocus={focusHandler}
+                      onBlur={blurHandler}
+                      placeholder='Type column name...'
+                    />
+                  </div>
                 ) : (
-                  <h1 className='text-2xl ml-1 font-bold flex justify-center border-2 border-white dark:border-night-sky dark:bg-night-sky'>
-                    {column.title}
-                  </h1>
+                  <div className='flex justify-between w-full border-b-2 border-transparent'>
+                    <h1 className='text-xl ml-1 font-bold flex justify-center border-2 border-white dark:border-night-sky dark:bg-night-sky'>
+                      {column.title}
+                    </h1>
+                    <div className='flex gap-2'>
+                      <button
+                        className='p-1 border-2 border-transparent rounded-md shadow-md dark:bg-black-velvet hover:border-green-500 transition-colors'
+                        onClick={() => handleAddTask(column.id, '')}
+                      >
+                        <PlusIcon className='h-5 w-5 ' />
+                      </button>
+
+                      <button
+                        className='p-1 border-2 border-transparent rounded-md shadow-md dark:bg-black-velvet hover:border-rose-500 transition-colors'
+                        onClick={() => handleDeleteTask(column.id)}
+                      >
+                        <MinusIcon className='h-5 w-5' />
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
               <Droppable
@@ -356,7 +369,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                       <div
                         ref={innerRef}
                         {...droppableProps}
-                        className={`flex flex-col flex-grow px-2 pb-2 min-h-400 transition-colors duration-300`}
+                        className={`flex flex-col flex-grow px-2 min-h-400 transition-colors duration-300`}
                       >
                         {tasks.map((task, i) => (
                           <Task
@@ -369,22 +382,6 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
                         ))}
 
                         {placeholder}
-                      </div>
-
-                      <div className='flex flex-row pl-2 mt-2 '>
-                        <button
-                          className='border-2 border-transparent p-1 my-2 rounded-md shadow-md dark:bg-black-velvet hover:border-green-500 transition-colors duration-200'
-                          onClick={() => handleAddTask(column.id, '')}
-                        >
-                          <PlusIcon className='h-5 w-5' />
-                        </button>
-
-                        <button
-                          className='border-2 border-transparent p-1 my-2 rounded-md shadow-md dark:bg-black-velvet ml-2 hover:border-rose-500 transition-colors duration-200'
-                          onClick={() => handleDeleteTask(column.id)}
-                        >
-                          <MinusIcon className='h-5 w-5' />
-                        </button>
                       </div>
                     </Tree>
                   </div>

@@ -6,20 +6,18 @@ type Props = WithChildren<{}>
 
 export const BoardLayout = ({ children }: Props) => {
   return (
-    <div className='dark:bg-absence'>
-      <main className='flex'>
-        <Sidebar />
+    <div className='dark:bg-absence flex h-full'>
+      <Sidebar />
 
-        <div
-          onContextMenu={(e) => {
-            e.preventDefault()
-            return false
-          }}
-          className='flex flex-col h-[92vh] flex-grow rounded-xl dark:bg-black-velvet/50 overflow-scroll overflow-x-hidden'
-        >
-          {children}
-        </div>
-      </main>
+      <div
+        onContextMenu={(e) => {
+          e.preventDefault()
+          return false
+        }}
+        className='flex flex-col flex-grow rounded-2xl dark:bg-black-velvet/50 overflow-scroll overflow-x-hidden'
+      >
+        {children}
+      </div>
     </div>
   )
 }

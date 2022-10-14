@@ -9,15 +9,7 @@ import Tooltip from '../utils/Tooltip'
 import _ from 'lodash'
 import { trpc } from '../../utils/trpc'
 
-const Board = ({
-  data,
-  title,
-}: // isLoading,
-{
-  data: any
-  title: string
-  // isLoading: boolean
-}) => {
+const Board = ({ data, title }: { data: any; title: string }) => {
   const [state, setState] = useState<Data>(data)
   const trpcClient = trpc.useContext()
   const [isLoading, setisLoading] = useState(true)
@@ -207,6 +199,7 @@ const Board = ({
         !isLoading ? 'opacity-100' : 'opacity-0'
       }`}
     >
+      {/* <div className='dark:bg-black-velvet h-96 mt-2 rounded-xl'></div> */}
       <Input state={state} setState={setState} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='columns' direction='horizontal' type='column'>

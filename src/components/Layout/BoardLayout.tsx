@@ -14,7 +14,7 @@ export const BoardLayout = ({ children }: Props) => {
           e.preventDefault()
           return false
         }}
-        className='flex flex-col flex-grow rounded-2xl dark:bg-black-velvet/50 overflow-scroll overflow-x-hidden'
+        className='flex flex-col flex-grow rounded-2xl dark:bg-black-velvet/50 overflow-y-scroll overflow-x-hidden'
       >
         {children}
       </div>

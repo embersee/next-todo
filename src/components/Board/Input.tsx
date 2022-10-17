@@ -11,7 +11,9 @@ const Input = ({ state, setState }: InputProps) => {
   const [error, setError] = useState(false)
   const [colError, setColError] = useState(false)
   const [selectColumn, setSelectColumn] = React.useState(
-    `${state.columns[state.columnOrder[0]].title}`
+    `${
+      state.columnOrder.length ? state.columns[state.columnOrder[0]].title : ''
+    }`
   )
   const [selectPriority, setSelectPriority] = React.useState('Low')
 
@@ -72,7 +74,7 @@ const Input = ({ state, setState }: InputProps) => {
             'task-1': {
               id: 'task-1',
               content: text,
-              priority: '',
+              priority: selectPriority.toLowerCase(),
               label: '',
               objectives: [],
             },

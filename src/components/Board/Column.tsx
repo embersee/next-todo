@@ -1,13 +1,12 @@
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 
-import { ChevronDownIcon, MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { MinusIcon, PlusIcon } from '@radix-ui/react-icons'
 import { useEffect, useState } from 'react'
 
 import { ColumnContextMenu } from '../utils/ColumnContextMenu'
 import { ColumnProps } from '../../ts/interfaces'
 import Task from './Task'
-import Tooltip from '../utils/Tooltip'
 import { Tree } from '../utils/Tree'
 import _ from 'lodash'
 
@@ -22,8 +21,8 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
   useEffect(() => {
     setTimeout(() => {
       setOpen(true)
-    }, 600)
-  }, [])
+    }, 600 + index * 80)
+  }, [index])
 
   useEffect(() => {
     if (title === '') return
@@ -129,7 +128,7 @@ const Column = ({ column, tasks, index, setState }: ColumnProps) => {
         highestTaskIndex.length === 6 ? -1 : -2
       )
       const task = `task-${Number(lastNum) + 1}`
-      //TODO: task should equal 'task' + 1 from not the amount of tasks left over but take latest task and add a +1 to the number of task
+
       //check if there already is a existing new empty task
       const filterEmptyTasks = _.filter(
         prev.tasks,

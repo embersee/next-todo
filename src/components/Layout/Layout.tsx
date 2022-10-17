@@ -14,7 +14,7 @@ export const Layout = ({ children }: Props) => {
           e.preventDefault()
           return false
         }}
-        className='flex flex-col flex-grow rounded-xl dark:bg-black-velvet/50 overflow-y-scroll'
+        className='flex flex-col flex-grow rounded-xl dark:bg-black-velvet/50'
       >
         {children}
       </main>

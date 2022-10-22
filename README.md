@@ -16,7 +16,9 @@ A small todo/kanban app, built to learn React, which later transitioned to learn
  ### Live: https://next-todo-silk-one.vercel.app
   
 ### Small preview: 
+![next-todo](https://user-images.githubusercontent.com/78863729/197360981-c4e8b328-d789-4e9b-b427-740d00628ea2.gif)
 ![next-todo2](https://media1.giphy.com/media/45VVSReryRshipYRIr/giphy.gif)
+
 
 ### Deployed with: 
   - Vercel

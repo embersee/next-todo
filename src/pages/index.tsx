@@ -1,13 +1,12 @@
 import Head from 'next/head'
 import { Layout } from '../components/Layout/Layout'
 import Link from 'next/link'
-import type { NextPage } from 'next'
 import { NextPageWithLayout } from './_app'
 import { ReactElement } from 'react'
 import { useSession } from 'next-auth/react'
 
 const Home: NextPageWithLayout = () => {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   return (
     <>
       <Head>
